@@ -6,7 +6,7 @@
       "MY_ID2": "acc-xyz",
       "MY_ID3": "123456",
       "MY_ID4": "765432",
-      "MY_ID5": "acc-xyz",
+      "MY_ID5": "acc-xyz"
     },
     "admin": {
       "MY_AD": "admin-xyz",
@@ -15,6 +15,6 @@
       "MY_AD2": "admin-xyz",
       "MY_AD3": "123456",
       "MY_AD4": "765432",
-      "MY_AD5": "admin-xyz",
+      "MY_AD5": "admin-xyz"
       }
 }

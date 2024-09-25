@@ -30,8 +30,6 @@ env:
       value: "admin-name"
     - name: "MY_AD1"
       value: "admin-xyz"
-    - name: "MY_AD2"
-      value: "admin-xyz"
     - name: "MY_AD3"
       value: "123456"
     - name: "MY_AD4"
