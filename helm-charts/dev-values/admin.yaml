@@ -39,4 +39,4 @@ env:
     - name: "MY_AD6"
       value: "admin-xyz"
     - name: "MY_AD7"
-      value: "admin-xyz"
+      value: "value7"
