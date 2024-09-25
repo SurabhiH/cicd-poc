@@ -38,3 +38,5 @@ env:
       value: "765432"
     - name: "MY_AD5"
       value: "admin-xyz"
+    - name: "MY_AD6"
+      value: "admin-xyz"
