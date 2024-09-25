@@ -28,8 +28,6 @@ env:
       value: "new-pub-xyz"
     - name: "MY_NEW_NAME"
       value: "new-pub-name"
-    - name: "MY_NEW_ID0"
-      value: "000000"
     - name: "MY_NEW_ID1"
       value: "new-pub-xyz"
     - name: "MY_NEW_ID2"
