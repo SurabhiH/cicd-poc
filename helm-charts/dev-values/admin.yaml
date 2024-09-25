@@ -40,3 +40,5 @@ env:
       value: "value7"
     - name: "MY_AD8"
       value: "value8"
+    - name: "MY_AD9"
+      value: "value9"
