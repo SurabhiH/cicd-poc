@@ -38,3 +38,5 @@ env:
       value: "234567"
     - name: "MY_NEW_ID6"
       value: "615243"
+    - name: "MY_NEW_ID7"
+      value: "777243"
