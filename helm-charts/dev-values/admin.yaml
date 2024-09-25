@@ -38,3 +38,5 @@ env:
       value: "admin-xyz"
     - name: "MY_AD7"
       value: "value7"
+    - name: "MY_AD8"
+      value: "value8"
