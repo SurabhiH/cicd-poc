@@ -24,17 +24,17 @@ fullnameOverride: acc-xyz
  
 env:
   account_statement:
-    - name: MY_ID
-      value: acc-xyz
-    - name: MY_NAME
-      value: acc-name
-    - name: MY_ID1
-      value: acc-xyz
-    - name: MY_ID2
-      value: acc-xyz
-    - name: MY_ID3
-      value: 123456
-    - name: MY_ID4
-      value: 765432
-    - name: MY_ID5
-      value: acc-xyz
+    - name: "MY_ID"
+      value: "acc-xyz"
+    - name: "MY_NAME"
+      value: "acc-name"
+    - name: "MY_ID1"
+      value: "acc-xyz"
+    - name: "MY_ID2"
+      value: "acc-xyz"
+    - name: "MY_ID3"
+      value: "123456"
+    - name: "MY_ID4"
+      value: "765432"
+    - name: "MY_ID5"
+      value: "acc-xyz"
