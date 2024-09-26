@@ -7,19 +7,16 @@
         "MY_ID3": "acc-333",
         "MY_ID4": "acc-444",
         "MY_ID5": "acc-555",
-        "MY_ID6": "acc-666",
-        "Key1": "acc-key-1",
-        "Key2": "acc-key-2",
-        "Key3": "acc-key-3"
+        "MY_ID6": "acc-666"
     },
     "admin": {
         "MY_AD": "admin-xyz",
         "MY_NAME": "admin-name",
         "MY_AD1": "admin-111",
+        "MY_AD2": "admin-222",
         "MY_AD3": "admin-333",
         "MY_AD4": "admin-444",
-        "MY_AD5": "admin-555",
-        "admin-Key1": "admin-key-1"
+        "MY_AD5": "admin-555"
     },
     "publisher": {
         "MY_NEW_ID": "new-pub-xyz",
@@ -28,6 +25,6 @@
         "MY_NEW_ID2": "new-pub-222",
         "MY_NEW_ID3": "new-pub-333",
         "MY_NEW_ID4": "new-pub-444",
-        "MY_NEW_ID5": "pub-555"
+        "MY_NEW_ID5": "new-pub-555"
     }
 }
