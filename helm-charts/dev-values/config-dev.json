@@ -7,7 +7,8 @@
         "MY_ID3": "acc-333",
         "MY_ID4": "acc-444",
         "MY_ID5": "acc-555",
-        "MY_ID6": "acc-666"
+        "MY_ID6": "acc-666",
+        "Key4": "acc-key-value4"
     },
     "admin": {
         "MY_AD": "admin-xyz",

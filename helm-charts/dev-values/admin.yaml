@@ -30,9 +30,12 @@ env:
       value: "admin-name"
     - name: "MY_AD1"
       value: "admin-111"
+    - name: "MY_AD2"
+      value: "admin-222"
     - name: "MY_AD3"
       value: "admin-333"
     - name: "MY_AD4"
       value: "admin-444"
     - name: "admin-Key1"
       value: "admin-key-value1"
+    
