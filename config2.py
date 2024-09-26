@@ -40,52 +40,46 @@ def extract_key_value_pairs(line):
         return key, value
     return None, None
 
-def update_config(config_path, merge_values):
-    """Update the config-dev.json file based on merge-values."""
-    # Load the JSON config
-    try:
-        with open(config_path, 'r') as config_file:
-            config_data = json.load(config_file)
-    except FileNotFoundError:
-        print("The config-dev.json file was not found.")
-        return
-    except json.JSONDecodeError:
-        print("The config-dev.json file is not a valid JSON.")
-        return
+def modify_json(config_path, merge_values):
+    # Load the config file
+    with open(config_path, 'r') as json_file:
+        config_data = json.load(json_file)
 
-    # Iterate through merge-values and update the config
     for var in merge_values:
-        action, obj_name = var[:-3], var[:-3]  # 'add' or 'delete', and object name
+        object_name = var.split('add')[0] if 'add' in var else var.split('delete')[0]
+        action = 'add' if 'add' in var else 'delete'
+        items = globals().get(var, {})
 
-        if obj_name in config_data:
-            obj = config_data[obj_name]
+        if object_name in config_data:
+            object_data = config_data[object_name]
+
+            if action == 'add':
+                # Add key-value pairs
+                for key, value in items.items():
+                    if key not in object_data:
+                        object_data[key] = value
+                    else:
+                        print(f"Duplicate found for {key} in {object_name}, skipping addition.")
+            elif action == 'delete':
+                # Delete key-value pairs
+                for key in list(items.keys()):
+                    if key in object_data:
+                        del object_data[key]
+                    else:
+                        print(f"No key found for {key} in {object_name}, skipping deletion.")
         else:
-            print(f"Object '{obj_name}' not found in config-dev.json.")
-            continue
+            print(f"{object_name} not found in config-dev.json.")
 
-        if var.endswith("add"):
-            for name, value in globals().get(var, {}).items():
-                if name not in obj:
-                    obj[name] = value  # Add if not a duplicate
-                else:
-                    print(f"Duplicate found: '{name}' already exists in '{obj_name}'")
-
-        elif var.endswith("delete"):
-            for name, value in globals().get(var, {}).items():
-                if name in obj and obj[name] == value:
-                    del obj[name]  # Remove the key-value pair
-                else:
-                    print(f"No matching key-value pair found for deletion in '{obj_name}'")
-
-    # Save the updated config
-    with open(config_path, 'w') as config_file:
-        json.dump(config_data, config_file, indent=4)
-    print("Config updated successfully.")
+    # Write the updated config back to the file
+    with open(config_path, 'w') as json_file:
+        json.dump(config_data, json_file, indent=4)
 
 def main():
     directory = input("Enter the relative path to the desired folder: ")
+    config_path = input("Enter the path to config-dev.json: ")
+    
     absolute_directory = os.path.abspath(directory)
-
+    
     if not os.path.isdir(absolute_directory):
         print("The provided path is not a valid directory.")
         return
@@ -96,8 +90,6 @@ def main():
     if not yaml_files:
         print("No YAML files found in the directory.")
         return
-
-    config_path = input("Enter the absolute path to the config-dev.json: ")
 
     merge_values = []
 
@@ -136,6 +128,19 @@ def main():
                         elif key == "value":
                             deletions.append((name, value.strip()))  # Store as tuple
 
+                # Check for updated values (value changed)
+                if additions and deletions:
+                    for add in additions:
+                        name, new_value = add
+                        for delete in deletions:
+                            _, old_value = delete
+                            if new_value == old_value:
+                                # Update the addition with the previous value
+                                additions.remove(add)
+                                # Adding a special case to indicate a value update
+                                additions.append((name, old_value))  # Store old value as 'updated'
+                                break
+
                 # Create dynamically named lists for each filename
                 if additions:
                     globals()[f"{filename}add"] = {name: value for name, value in additions}
@@ -150,8 +155,7 @@ def main():
         formatted_output = [f"'{name}':'{value}'" for name, value in globals().get(var, {}).items()]
         print(f"{var} = [{', '.join(formatted_output)}]")
 
-    # Update the config file
-    update_config(config_path, merge_values)
+    modify_json(config_path, merge_values)
 
 if __name__ == "__main__":
     main()
