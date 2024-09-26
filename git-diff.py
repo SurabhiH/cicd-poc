@@ -45,7 +45,7 @@ def main():
         print(f"Diff for {yaml_file}:\n")
         diff_output = git_diff(yaml_file)
         print(diff_output if diff_output else "No differences found.\n")
-        print('-' * 40)
+        print('-' * 200)
 
 if __name__ == "__main__":
     main()

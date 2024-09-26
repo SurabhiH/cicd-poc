@@ -41,3 +41,26 @@ Below I am providing sample config-dev.json.
 
  
 I need a python script, which can go to the desired folder(ask for input), and for each yaml file execute the command  git diff Head~1 HEAD {filename.yaml}. List down the difference on standard output. 
+
+
+my script should perform the folowing steps 
+step 1: first fetch the git diff in the last and previous last commit of all the yaml files present in the folder, and it should store the the diff output in a file called git_diff.txt. 
+step 2: It should parse through the diff g for each yaml diff in file in the git_diffdiff.txt create a dictionary with the name of yaml file which will inturn containe 2 lists addition and deletion inside the lists we can have the updated key-value pairs based on + for addition and - for deletion. and once it parses all the diffs in diff.txt, it should fetch 
+
+step 2: In the git_diff.txt file the output for each yaml file is separated by trailing '-' 100 characters. it should parse through each section, for the diff output for each yaml file, if there is a statement called "No differences found." then continue to check the diff output of next yaml file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
