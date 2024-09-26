@@ -99,6 +99,359 @@ Diff for admin.yaml:
 - "admin-555"
 
 
+Here is the partial script which has to be updated based on the below inputs: 
+
+import os
+import subprocess
+
+def get_yaml_files(directory):
+    """Return a list of YAML files in the specified directory."""
+    return [f for f in os.listdir(directory) if f.endswith('.yaml')]
+
+def git_diff(file_path):
+    """Execute git diff command and return the output."""
+    try:
+        # Execute the git diff command
+        result = subprocess.run(
+            ['git', 'diff', 'HEAD~1', 'HEAD', file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        return e.stdout + e.stderr  # Return both stdout and stderr if an error occurs
+
+def main():
+    # Ask for the relative directory input
+    directory = input("Enter the relative path to the desired folder: ")
+
+    # Get the absolute path
+    absolute_directory = os.path.abspath(directory)
+
+    if not os.path.isdir(absolute_directory):
+        print("The provided path is not a valid directory.")
+        return
+
+    # Change to the specified directory
+    os.chdir(absolute_directory)
+
+    # Get YAML files in the directory
+    yaml_files = get_yaml_files(absolute_directory)
+
+    if not yaml_files:
+        print("No YAML files found in the directory.")
+        return
+
+    # Iterate through each YAML file and show the git diff
+    for yaml_file in yaml_files:
+        print(f"Diff for {yaml_file}:\n")
+        diff_output = git_diff(yaml_file)
+        print(diff_output if diff_output else "No differences found.\n")
+        print('-' * 200)
+
+if __name__ == "__main__":
+    main()
+
+
+
+INPUT:
+my modified script should perform the folowing steps 
+step 1: first fetch the git diff in the last and previous last commit of all the yaml files present in the folder, and it should store the the diff output in a file called git_diff.txt. 
+
+
+
+step 2: In the git_diff.txt file the output for each yaml file is separated by trailing '-' 100 characters. it should parse through each section between the trailing characters, for the diff output for each yaml file, if there is a statement called "No differences found." then continue to check the diff output of next yaml file. Else, create a dictionary same as the yaml file excluding the extension .yaml, in each the dictionary create 2 lists add and delete such that, when the diff output is checked for each section, it will contain + and - as the new updations from the diff cmd for each yaml file. if there is only single '+' character in the section add it under the list add, else if there is only single '-' add it under the list delete.
+
+
+
+step 3: Once we have all the dictionaries that have to be updated, fetch the file 'config-dev.json' which already has a list of entries for all the objects that is the key-value pairs of the yaml file. the objects here refer to the name of yaml file without the extension yaml similar to the dictionaries. So here the script has to parse through each object, and if there is a dictionary present with the same name as the object, and the dictionary has entries in the add list, it has to check for the key-value pairs under the same object in the json file and add the newly updated key-value pairs from the list if it does not exist. if there are entries in the delete list of the dictionary, go to the relevant object and search for the key-value pairs from the list in the json object and remove them. if they are not present, print the object name and the key-value pairs and the error msg.
+
+
+below is the sample diff output which is generated from the sample script,
+Enter the relative path to the desired folder: helm-charts/dev-values
+Diff for account.yaml:
+
+diff --git a/helm-charts/dev-values/account.yaml b/helm-charts/dev-values/account.yaml
+index 0bebb93..f915a0e 100644
+--- a/helm-charts/dev-values/account.yaml
++++ b/helm-charts/dev-values/account.yaml
+@@ -36,3 +36,5 @@ env:
+       value: "765432"
+     - name: "MY_ID5"
+       value: "acc-xyz"
++    - name: "MY_ID6"
++      value: "66666"
+\ No newline at end of file
+
+----------------------------------------
+Diff for admin.yaml:
+
+diff --git a/helm-charts/dev-values/admin.yaml b/helm-charts/dev-values/admin.yaml
+index 33d5297..67a840b 100644
+--- a/helm-charts/dev-values/admin.yaml
++++ b/helm-charts/dev-values/admin.yaml
+@@ -40,3 +40,5 @@ env:
+       value: "value7"
+     - name: "MY_AD8"
+       value: "value8"
++    - name: "MY_AD9"
++      value: "value9"
+
+----------------------------------------
+Diff for publisher.yaml:
+
+No differences found.
+
+----------------------------------------
+Diff for publisher.yaml:
+
+No differences found.
+
+----------------------------------------
+
+
+
+
+Modify the below script such that after storing the output in the .txt file, pick the file name from the .txt file, from the line starting with "Diff for {filename}.yaml" (file name will be for example admin, account etc). under each filename modified content is present, consider all the lines starting with '+' and/or '-' and search for the keys starting with name and values, if the line starts with + append it into a list by creating the list with the name of the "filename+add" such that the value of name and values keys, should get stored in a key:value pair. else if the line starts with - append it into a list by creating the list with the name of the "filename+delete" such that the value of name and values keys, should get stored in a key:value pair. if the created list is not empty, push the list into the list called "merge-values".
+
+expected output :
+
+merge-values = [ accountadd, admindelete ]
+admindelete = [ "MY_AD5":"admin-555" ]
+accountadd = [ "MY_ID6":"acc-666", ]
+
+
+
+
+
+import os
+import subprocess
+import re
+
+def get_yaml_files(directory):
+    """Return a list of YAML files in the specified directory."""
+    return [f for f in os.listdir(directory) if f.endswith('.yaml')]
+
+def git_diff(file_path):
+    """Execute git diff command and return the output."""
+    try:
+        # Execute the git diff command
+        result = subprocess.run(
+            ['git', 'diff', 'HEAD~1', 'HEAD', file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        return e.stdout + e.stderr  # Return both stdout and stderr if an error occurs
+
+def filter_diff_content(diff_output):
+    """Filter the diff content based on the given criteria."""
+    filtered_lines = []
+    for line in diff_output.splitlines():
+        if line.startswith("Diff for"):
+            filtered_lines.append(line)
+        elif re.match(r'^[+-]\s.*', line):  # Lines starting with a single + or -
+            # Remove everything up to and including the first ':'
+            modified_line = re.sub(r'^[+-]\s*[^:]*:', '', line).strip()
+            filtered_lines.append(f"{line[0]} {modified_line}")  # Add the + or - at the start
+        elif len(line) >= 40 and line.strip('-') == '':  # Lines with at least 40 trailing -
+            filtered_lines.append(line)
+    return filtered_lines
+
+def main():
+    # Ask for the relative directory input
+    directory = input("Enter the relative path to the desired folder: ")
+
+    # Get the absolute path
+    absolute_directory = os.path.abspath(directory)
+
+    if not os.path.isdir(absolute_directory):
+        print("The provided path is not a valid directory.")
+        return
+
+    # Change to the specified directory
+    os.chdir(absolute_directory)
+
+    # Get YAML files in the directory
+    yaml_files = get_yaml_files(absolute_directory)
+
+    if not yaml_files:
+        print("No YAML files found in the directory.")
+        return
+
+    # Open the output file to store filtered diff content
+    with open("git-diff.txt", "w") as output_file:
+        # Iterate through each YAML file and show the git diff
+        for yaml_file in yaml_files:
+            diff_output = git_diff(yaml_file)
+
+            if not diff_output.strip():
+                continue  # Skip if there's no diff
+
+            filtered_output = filter_diff_content(f"Diff for {yaml_file}:\n{diff_output}")
+            
+            # Write the filtered content to the file
+            if filtered_output:
+                output_file.write("\n".join(filtered_output) + "\n\n")
+                print(f"Diff for {yaml_file} written to git-diff.txt.")
+            else:
+                print(f"No relevant changes found for {yaml_file}.")
+
+if __name__ == "__main__":
+    main()
+
+
+merge-values = ['accountadd', 'admindelete']
+accountadd = ['MY_ID6':'acc-666']
+admindelete = ['MY_AD5':'admin-555']
+
+
+Modify the above script such that, it asks the path for config-dev.json from the user. It parses through each list present in merge-values, and in each list it if the list name has add, go to the object present in the config-dev.json and look for the object which is similar to the filename present in the list (pick the object name from the list, let's say if the list name is accountadd then account will be the object name) go inside the object, if the list name has add, then add the key, value pairs present in the list to the object, and such that there are no duplicates present. similarly if the list name has delete, then check if the key value pair is present in the object, if yes delete, else print that no key was found in the {object name}.
+
+import os
+import subprocess
+import re
+
+def get_yaml_files(directory):
+    """Return a list of YAML files in the specified directory."""
+    return [f for f in os.listdir(directory) if f.endswith('.yaml')]
+
+def git_diff(file_path):
+    """Execute git diff command and return the output."""
+    try:
+        result = subprocess.run(
+            ['git', 'diff', 'HEAD~1', 'HEAD', file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        return e.stdout + e.stderr
+
+def filter_diff_content(diff_output):
+    """Filter the diff content for relevant changes."""
+    filtered_lines = []
+    for line in diff_output.splitlines():
+        if line.startswith("Diff for"):
+            filtered_lines.append(line)
+        elif line.startswith('+ ') or line.startswith('- '):
+            # Ensure the line is longer than 1 character
+            if len(line) > 1:
+                filtered_lines.append(line)
+    return filtered_lines
+
+def extract_key_value_pairs(line):
+    """Extract key-value pairs from a diff line."""
+    match = re.search(r'(name|value)\s*:\s*"(.*?)"', line)
+    if match:
+        key, value = match.groups()
+        return key, value
+    return None, None
+
+def main():
+    directory = input("Enter the relative path to the desired folder: ")
+    absolute_directory = os.path.abspath(directory)
+
+    if not os.path.isdir(absolute_directory):
+        print("The provided path is not a valid directory.")
+        return
+
+    os.chdir(absolute_directory)
+    yaml_files = get_yaml_files(absolute_directory)
+
+    if not yaml_files:
+        print("No YAML files found in the directory.")
+        return
+
+    merge_values = []
+
+    with open("git-diff.txt", "w") as output_file:
+        for yaml_file in yaml_files:
+            diff_output = git_diff(yaml_file)
+
+            if not diff_output.strip():
+                continue
+
+            filtered_output = filter_diff_content(f"Diff for {yaml_file}:\n{diff_output}")
+
+            if filtered_output:
+                output_file.write("\n".join(filtered_output) + "\n\n")
+                print(f"Diff for {yaml_file} written to git-diff.txt.")
+
+                additions = []
+                deletions = []
+                filename = None
+
+                for line in filtered_output:
+                    if line.startswith(f"Diff for {yaml_file}"):
+                        filename = yaml_file.split(".")[0]
+                    elif line.strip() == "":  # Encounter a blank line
+                        break
+                    elif line.startswith('+'):
+                        key, value = extract_key_value_pairs(line)
+                        if key == "name":
+                            name = value.strip()
+                        elif key == "value":
+                            additions.append((name, value.strip()))  # Store as tuple
+                    elif line.startswith('-'):
+                        key, value = extract_key_value_pairs(line)
+                        if key == "name":
+                            name = value.strip()
+                        elif key == "value":
+                            deletions.append((name, value.strip()))  # Store as tuple
+
+                # Create dynamically named lists for each filename
+                if additions:
+                    globals()[f"{filename}add"] = {name: value for name, value in additions}
+                    merge_values.append(f"{filename}add")
+                if deletions:
+                    globals()[f"{filename}delete"] = {name: value for name, value in deletions}
+                    merge_values.append(f"{filename}delete")
+
+    print("merge-values =", merge_values)
+    for var in merge_values:
+        # Format the output correctly
+        formatted_output = [f"'{name}':'{value}'" for name, value in globals().get(var, {}).items()]
+        print(f"{var} = [{', '.join(formatted_output)}]")
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
