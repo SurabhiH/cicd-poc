@@ -36,6 +36,3 @@ env:
       value: "admin-333"
     - name: "MY_AD4"
       value: "admin-444"
-    - name: "MY_AD5"
-      value: "admin-555"
-
