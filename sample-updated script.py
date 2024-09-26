@@ -38,12 +38,13 @@ def process_diff_output(file_path):
 
     # Split the diff output by lines and iterate over each line
     for line in diff_output.splitlines():
-        if line.startswith('+') and not line.startswith('+++'):
-            # Line was added, add to "add" list
-            changes['add'].append(line[1:].strip())
-        elif line.startswith('-') and not line.startswith('---'):
-            # Line was deleted, add to "delete" list
-            changes['delete'].append(line[1:].strip())
+        if 'name' in line:
+            if line.startswith('+') and not line.startswith('+++'):
+                # Line was added, add to "add" list
+                changes['add'].append(line[1:].strip())
+            elif line.startswith('-') and not line.startswith('---'):
+                # Line was deleted, add to "delete" list
+                changes['delete'].append(line[1:].strip())
     
     # Return the dictionary containing the changes
     return {file_name: changes} if changes['add'] or changes['delete'] else None
@@ -55,18 +56,24 @@ def update_json_with_diff(json_data, diff_changes):
             # Update the existing object in the JSON
             for add_entry in changes['add']:
                 key, value = parse_key_value(add_entry)
-                if key and key not in json_data[yaml_file]:
+                if key == 'name' and value and key not in json_data[yaml_file]:
                     json_data[yaml_file][key] = value
 
             for delete_entry in changes['delete']:
                 key, value = parse_key_value(delete_entry)
-                if key and key in json_data[yaml_file]:
+                if key == 'name' and key in json_data[yaml_file]:
                     del json_data[yaml_file][key]
         else:
-            print(f"Error: {yaml_file} not found in the JSON file.")
+            # If yaml_file is not in the JSON, create a new entry for it
+            json_data[yaml_file] = {}
+            for add_entry in changes['add']:
+                key, value = parse_key_value(add_entry)
+                if key == 'name' and value:
+                    json_data[yaml_file][key] = value
 
 def parse_key_value(line):
-    """Parse a line of key-value pair."""
+    """Parse a line of key-value pair, specifically searching for 'name'."""
+    # Assuming key-value pair is in the format: name: "value"
     match = re.match(r'(\S+):\s*["\']?([^"\']+)["\']?', line)
     return match.groups() if match else (None, None)
 

@@ -1,0 +1,107 @@
+import os
+import subprocess
+
+def get_yaml_files(directory):
+    """Return a list of YAML files in the specified directory."""
+    return [f for f in os.listdir(directory) if f.endswith('.yaml')]
+
+def git_diff(file_path):
+    """Execute git diff command and return the output."""
+    try:
+        # Execute the git diff command
+        result = subprocess.run(
+            ['git', 'diff', 'HEAD~1', 'HEAD', file_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        return e.stdout + e.stderr  # Return both stdout and stderr if an error occurs
+
+def main():
+    # Ask for the relative directory input
+    directory = input("Enter the relative path to the desired folder: ")
+
+    # Get the absolute path
+    absolute_directory = os.path.abspath(directory)
+
+    if not os.path.isdir(absolute_directory):
+        print("The provided path is not a valid directory.")
+        return
+
+    # Change to the specified directory
+    os.chdir(absolute_directory)
+
+    # Get YAML files in the directory
+    yaml_files = get_yaml_files(absolute_directory)
+
+    if not yaml_files:
+        print("No YAML files found in the directory.")
+        return
+
+    # Iterate through each YAML file and show the git diff
+    for yaml_file in yaml_files:
+        print(f"Diff for {yaml_file}:\n")
+        diff_output = git_diff(yaml_file)
+        print(diff_output if diff_output else "No differences found.\n")
+        print('-' * 200)
+
+if __name__ == "__main__":
+    main() 
+
+
+Modify the above python script,  store the output of the script in the file "git-diff.txt" . But only store the relevant information means store the content mentioned below 
+1) store the line starting from "Diff for"
+2) store the line that has a single '+' and '-' characters in this file
+3) store the line that has trailing '------' of min 40 characters
+
+currently the sample git_diff.txt looks like below:
+---------------------------------------
+Diff for account.yaml:
+diff --git a/helm-charts/dev-values/account.yaml b/helm-charts/dev-values/account.yaml
+index 74b522a..b06be94 100644
+--- a/helm-charts/dev-values/account.yaml
++++ b/helm-charts/dev-values/account.yaml
+@@ -38,3 +38,5 @@ env:
+       value: "acc-444"
+     - name: "MY_ID5"
+       value: "acc-555"
++    - name: "MY_ID6"
++      value: "acc-666"
+
+
+---------------------------------------
+Diff for admin.yaml:
+diff --git a/helm-charts/dev-values/admin.yaml b/helm-charts/dev-values/admin.yaml
+index cd77bd8..3a65a87 100644
+--- a/helm-charts/dev-values/admin.yaml
++++ b/helm-charts/dev-values/admin.yaml
+@@ -36,6 +36,3 @@ env:
+       value: "admin-333"
+     - name: "MY_AD4"
+       value: "admin-444"
+-    - name: "MY_AD5"
+-      value: "admin-555"
+
+
+But the expected output is as mentioned below
+---------------------------------------
+Diff for account.yaml:
+
++ "MY_ID6"
++ "acc-666"
+
+---------------------------------------
+Diff for admin.yaml:
+
+-  "MY_AD5"
+- "admin-555"
+
+
+
+
+
+
+
+
