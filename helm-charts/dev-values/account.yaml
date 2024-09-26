@@ -26,8 +26,6 @@ env:
   account_statement:
     - name: "MY_ID"
       value: "acc-xyz"
-    - name: "MY_NAME"
-      value: "acc-name"
     - name: "MY_ID1"
       value: "acc-111"
     - name: "MY_ID2"
