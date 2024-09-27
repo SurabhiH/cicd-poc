@@ -1,0 +1,39 @@
+# dev values for test app 
+# this is yaml formatted file 
+# below is the replicaCount 
+replicaCount: 2
+
+app:
+  name: acc-xyz
+ 
+Release:
+  Maintainer: abc
+  name: acc-xyz
+ 
+image:
+  image_name: acc-xyz
+  repository: 1
+  pullPolicy: Always
+  tag: 0.0.1
+ 
+imagePullSecrets:
+  - name: abc
+ 
+nameOverride: acc-xyz
+fullnameOverride: acc-xyz
+ 
+env:
+  account_statement:
+    - name: "MY_ID"
+      value: "sit-acc-xyz"
+    - name: "MY_ID1"
+      value: "sit-acc-111"
+    - name: "MY_ID2"
+      value: "sit-acc-222"
+    - name: "MY_ID3"
+      value: "sit-acc-333"
+    - name: "MY_ID4"
+      value: "sit-acc-444"
+
+
+

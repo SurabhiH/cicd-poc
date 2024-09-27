@@ -26,23 +26,23 @@
         "account_statement": [
           {
             "name": "MY_ID",
-            "value": "acc-xyz"
+            "value": "sit-acc-xyz"
           },
           {
             "name": "MY_ID1",
-            "value": "acc-111"
+            "value": "sit-acc-111"
           },
           {
             "name": "MY_ID2",
-            "value": "acc-222"
+            "value": "sit-acc-222"
           },
           {
             "name": "MY_ID3",
-            "value": "acc-333"
+            "value": "sit-acc-333"
           },
           {
             "name": "MY_ID4",
-            "value": "acc-444"
+            "value": "sit-acc-444"
           }
         ]
       }
@@ -75,39 +75,39 @@
         "admin_statement": [
           {
             "name": "MY_AD",
-            "value": "admin-xyz"
+            "value": "sit-admin-xyz"
           },
           {
             "name": "MY_NAME",
-            "value": "admin-name"
+            "value": "sit-admin-name"
           },
           {
             "name": "MY_AD1",
-            "value": "admin-111"
+            "value": "sit-admin-111"
           },
           {
             "name": "MY_AD2",
-            "value": "admin-222"
+            "value": "sit-admin-222"
           },
           {
             "name": "MY_AD3",
-            "value": "admin-333"
+            "value": "sit-admin-333"
           },
           {
             "name": "MY_AD4",
-            "value": "admin-444"
+            "value": "sit-admin-444"
           },
           {
             "name": "MY_AD5",
-            "value": "admin-555"
+            "value": "sit-admin-555"
           },
           {
             "name": "admin-Key1",
-            "value": "admin-key-value1"
+            "value": "sit-admin-key-value1"
           },
           {
             "name": "admin-Key2",
-            "value": "admin-key-value2"
+            "value": "sit-admin-key-value2"
           }
         ]
       }
@@ -140,31 +140,31 @@
         "pub_statement": [
           {
             "name": "MY_NEW_ID",
-            "value": "new-pub-xyz"
+            "value": "sit-pub-xyz"
           },
           {
             "name": "MY_NEW_NAME",
-            "value": "new-pub-name"
+            "value": "sit-pub-name"
           },
           {
             "name": "MY_NEW_ID1",
-            "value": "new-pub-111"
+            "value": "sit-pub-111"
           },
           {
             "name": "MY_NEW_ID2",
-            "value": "new-pub-222"
+            "value": "sit-pub-222"
           },
           {
             "name": "MY_NEW_ID3",
-            "value": "new-pub-333"
+            "value": "sit-pub-333"
           },
           {
             "name": "MY_NEW_ID4",
-            "value": "new-pub-444"
+            "value": "sit-pub-444"
           },
           {
             "name": "MY_NEW_ID5",
-            "value": "new-pub-555"
+            "value": "sit-pub-555"
           }
         ]
       }

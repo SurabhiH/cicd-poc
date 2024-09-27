@@ -1,0 +1,46 @@
+# dev values for test app 
+# this is yaml formatted file 
+# below is the replicaCount 
+replicaCount: 1
+
+app:
+  name: admin-xyz
+ 
+Release:
+  Maintainer: abc
+  name: admin-xyz
+ 
+image:
+  image_name: admin-xyz
+  repository: 1
+  pullPolicy: Always
+  tag: 0.0.1
+ 
+imagePullSecrets:
+  - name: abc
+ 
+nameOverride: admin-xyz
+fullnameOverride: admin-xyz
+ 
+env:
+  admin_statement:
+    - name: "MY_AD"
+      value: "sit-admin-xyz"
+    - name: "MY_NAME"
+      value: "sit-admin-name"
+    - name: "MY_AD1"
+      value: "sit-admin-111"
+    - name: "MY_AD2"
+      value: "sit-admin-222"
+    - name: "MY_AD3"
+      value: "sit-admin-333"
+    - name: "MY_AD4"
+      value: "sit-admin-444"
+    - name: "MY_AD5"
+      value: "sit-admin-555"
+    - name: "admin-Key1"
+      value: "sit-admin-key-value1"
+    - name: "admin-Key2"
+      value: "sit-admin-key-value2"
+
+    
