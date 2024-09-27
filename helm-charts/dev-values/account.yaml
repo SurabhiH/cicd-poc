@@ -3,8 +3,10 @@
 # below is the replicaCount 
 replicaCount: 2
 
+
 app:
   name: acc-xyz
+  id: acc-id
  
 Release:
   Maintainer: abc
