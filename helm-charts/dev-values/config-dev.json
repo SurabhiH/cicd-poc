@@ -5,8 +5,7 @@
         "MY_ID2": "acc-222",
         "MY_ID3": "acc-333",
         "MY_ID4": "acc-444",
-        "MY_ID5": "acc-555",
-        "MY_ID6": "acc-666"
+        "MY_ID5": "acc-555"
     },
     "admin": {
         "MY_AD": "admin-xyz",
@@ -26,6 +25,6 @@
         "MY_NEW_ID2": "new-pub-222",
         "MY_NEW_ID3": "new-pub-333",
         "MY_NEW_ID4": "new-pub-444",
-        "MY_NEW_ID6": "666"
+        "MY_NEW_ID6": "new-pub-666"
     }
 }

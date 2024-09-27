@@ -50,9 +50,9 @@ def update_json_file(git_diff_file, json_file):
                     if next_line.startswith("+ ") and "value" in next_line:
                         temp_new_value = next_line.split(":")[1].strip().replace('"', '')
                         # Replace the old value with the new value in the JSON object
-                        for item in current_object:
-                            if current_object[item] == temp_old_value:
-                                current_object[item] = temp_new_value
+                        for key, value in current_object.items():
+                            if value == temp_old_value:
+                                current_object[key] = temp_new_value
                                 break
                 except StopIteration:
                     # Handle the case where there's no next line (end of file)
@@ -65,6 +65,7 @@ def update_json_file(git_diff_file, json_file):
                 temp_value = line.split(":")[1].strip().replace('"', '')
                 # Add new key-value pair
                 current_object[temp_key] = temp_value
+                temp_key, temp_value = None, None  # Reset for next key-value pair
             
             elif line.startswith("- ") and "name" in line:
                 temp_key = line.split(":")[1].strip().replace('"', '')
@@ -74,9 +75,11 @@ def update_json_file(git_diff_file, json_file):
                 # Remove the key-value pair from the JSON object
                 if temp_key in current_object and current_object[temp_key] == temp_value:
                     del current_object[temp_key]
+                temp_key, temp_value = None, None  # Reset for next key-value pair
             
             # Ensure current_object is stored back in config_data
-            config_data[current_filename] = current_object
+            if current_filename:
+                config_data[current_filename] = current_object
 
     # Write the updated config data back to the JSON file
     with open(json_file, 'w') as jf:

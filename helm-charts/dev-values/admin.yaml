@@ -41,8 +41,8 @@ env:
     - name: "MY_AD6"
       value: "admin-666"
     - name: "admin-Key1"
-      value: "admin-key-value0"
-    - name: "admin-Key2"
       value: "admin-key-value1"
+    - name: "admin-Key2"
+      value: "admin-key-value2"
 
     

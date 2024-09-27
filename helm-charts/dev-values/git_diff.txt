@@ -1,5 +1,13 @@
 Diff for account.yaml:
+-    - name: "MY_ID6"
+-      value: "acc-666"
 Diff for admin.yaml:
++    - name: "MY_AD6"
++      value: "admin-666"
+-      value: "admin-key-value1"
++      value: "admin-key-value0"
+-      value: "admin-key-value2"
++      value: "admin-key-value1"
 Diff for publisher.yaml:
--      value: "new-pub-666"
-+      value: "666"
+-      value: "666"
++      value: "new-pub-666"
