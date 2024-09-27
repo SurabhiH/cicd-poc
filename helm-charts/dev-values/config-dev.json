@@ -1,70 +1,34 @@
 {
     "account": {
-      "replicaCount": 1,
-      "app": {
-        "name": "acc-xyz"
-      },
-      "Release": {
-        "Maintainer": "abc",
-        "name": "acc-xyz"
-      },
-      "image": {
-        "image_name": "acc-xyz",
-        "repository": 1,
-        "pullPolicy": "Always",
-        "tag": "0.0.1"
-      },
-      "imagePullSecrets": [
-        {
-          "name": "abc"
-        }
-      ],
-      "nameOverride": "acc-xyz",
-      "fullnameOverride": "acc-xyz",
-      "env": {
-        "account_statement": [
-          {
-            "name": "MY_ID",
-            "value": "acc-xyz"
-          },
-          {
-            "name": "MY_ID1",
-            "value": "acc-111"
-          },
-          {
-            "name": "MY_ID2",
-            "value": "acc-222"
-          },
-          {
-            "name": "MY_ID3",
-            "value": "acc-333"
-          },
-          {
-            "name": "MY_ID4",
-            "value": "acc-444"
-          },
-          {
-            "name": "MY_ID5",
-            "value": "acc-555"
-          },
-          {
-            "name": "MY_ID6",
-            "value": "acc-666"
-          },
-          {
-            "name": "Key5",
-            "value": "acc-key-value5"
-          },
-          {
-            "name": "Key6",
-            "value": "acc-key-value6"
-          },
-          {
-            "name": "Key7",
-            "value": "acc-key-value7"
-          }
-        ]
-      }
+        "MY_ID": "acc-xyz",
+        "MY_ID1": "acc-111",
+        "MY_ID2": "acc-222",
+        "MY_ID3": "acc-333",
+        "MY_ID4": "acc-444",
+        "MY_ID5": "acc-555",
+        "MY_ID6": "acc-666",
+        "Key5": "acc-key-value5",
+        "Key6": "acc-key-value6",
+        "Key7": "acc-key-value7"
+    },
+    "admin": {
+        "MY_AD": "admin-xyz",
+        "MY_NAME": "admin-name",
+        "MY_AD1": "admin-111",
+        "MY_AD3": "admin-333",
+        "MY_AD4": "admin-444",
+        "MY_AD5": "admin-555",
+        "admin-Key1": "admin-key-value1",
+        "admin-Key2": "admin-key-value2",
+        "MY_AD2": "admin-222"
+    },
+    "publisher": {
+        "MY_NEW_ID": "new-pub-xyz",
+        "MY_NEW_NAME": "new-pub-name",
+        "MY_NEW_ID1": "new-pub-111",
+        "MY_NEW_ID2": "new-pub-222",
+        "MY_NEW_ID3": "new-pub-333",
+        "MY_NEW_ID4": "new-pub-444",
+        "MY_NEW_ID5": "555"
     }
-  }
-  
+}

@@ -1,12 +1,2 @@
 Diff for account.yaml:
--    - name: "MY_NAME"
--      value: "acc-name"
-
-Diff for admin.yaml:
-+    - name: "MY_AD2"
-+      value: "admin-222"
-
-Diff for publisher.yaml:
--      value: "555-555-555"
-+      value: "555"
 
