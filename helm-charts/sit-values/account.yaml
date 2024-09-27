@@ -1,7 +1,7 @@
 # dev values for test app 
 # this is yaml formatted file 
 # below is the replicaCount 
-replicaCount: 1
+replicaCount: 6
 
 app:
   name: acc-xyz
