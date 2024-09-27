@@ -1,6 +1,0 @@
--    - name: "MY_NAME"
--      value: "acc-name"
-+    - name: "MY_AD2"
-+      value: "admin-222"
--      value: "555-555-555"
-+      value: "555"

@@ -102,6 +102,7 @@ def main():
                 continue
 
             filtered_output = filter_diff_content(f"Diff for {yaml_file}:\n{diff_output}")
+            print(filtered_output)
 
             if filtered_output:
                 output_file.write("\n".join(filtered_output) + "\n\n")

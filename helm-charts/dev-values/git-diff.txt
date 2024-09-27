@@ -1,2 +1,18 @@
 Diff for account.yaml:
+-    - name: "Key5"
+-      value: "acc-key-value5"
+-    - name: "Key6"
+-      value: "acc-key-value6"
+-    - name: "Key7"
+-      value: "acc-key-value7"
+
+Diff for admin.yaml:
++    - name: "MY_AD5"
++      value: "admin-555"
+
+Diff for publisher.yaml:
+-    - name: "MY_NEW_ID5"
+-      value: "555"
++    - name: "MY_NEW_ID6"
++      value: "new-pub-666"
 

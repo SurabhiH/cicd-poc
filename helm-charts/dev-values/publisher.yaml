@@ -37,4 +37,4 @@ env:
     - name: "MY_NEW_ID4"
       value: "new-pub-444"
     - name: "MY_NEW_ID6"
-      value: "666"
+      value: "new-pub-666"

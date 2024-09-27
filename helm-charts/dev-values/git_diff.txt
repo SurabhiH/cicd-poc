@@ -1,0 +1,5 @@
+Diff for account.yaml:
+Diff for admin.yaml:
+Diff for publisher.yaml:
+-      value: "new-pub-666"
++      value: "666"
