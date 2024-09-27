@@ -34,14 +34,14 @@ def filter_diff_content(diff_output):
 
 def extract_key_value_pairs(line):
     """Extract key-value pairs from a diff line."""
-    match = re.search(r'(name|value)\s*:\s*"(.*?)"', line)
+    # General regex to extract key-value pairs
+    match = re.search(r'(\w+)\s*:\s*"(.*?)"', line)
     if match:
         key, value = match.groups()
         return key, value
     return None, None
 
-def modify_json(config_path, merge_values, changes_dict):
-    """Modify the JSON configuration based on the changes extracted from YAML diffs."""
+def modify_json(config_path, merge_values):
     # Load the config file
     with open(config_path, 'r') as json_file:
         config_data = json.load(json_file)
@@ -49,27 +49,22 @@ def modify_json(config_path, merge_values, changes_dict):
     for var in merge_values:
         object_name = var.split('add')[0] if 'add' in var else var.split('delete')[0]
         action = 'add' if 'add' in var else 'delete'
-        items = changes_dict.get(var, {})
+        items = globals().get(var, {})
 
         if object_name in config_data:
             object_data = config_data[object_name]
 
             if action == 'add':
-                # Add or update key-value pairs
+                # Add key-value pairs
                 for key, value in items.items():
-                    if key in object_data:
-                        # Replace the value if the key already exists
-                        print(f"Modifying {key}: Replacing {object_data[key]} with {value} in {object_name}.")
-                        object_data[key] = value  # Replace the existing value
-                    else:
-                        # Add the new key-value pair
-                        print(f"Adding {key}: {value} to {object_name}.")
+                    if key not in object_data:
                         object_data[key] = value
+                    else:
+                        print(f"Duplicate found for {key} in {object_name}, skipping addition.")
             elif action == 'delete':
                 # Delete key-value pairs
                 for key in list(items.keys()):
                     if key in object_data:
-                        print(f"Deleting {key} from {object_name}.")
                         del object_data[key]
                     else:
                         print(f"No key found for {key} in {object_name}, skipping deletion.")
@@ -98,7 +93,6 @@ def main():
         return
 
     merge_values = []
-    changes_dict = {}
 
     with open("git-diff.txt", "w") as output_file:
         for yaml_file in yaml_files:
@@ -113,53 +107,39 @@ def main():
                 output_file.write("\n".join(filtered_output) + "\n\n")
                 print(f"Diff for {yaml_file} written to git-diff.txt.")
 
-                additions = []
-                deletions = []
+                additions = {}
+                deletions = {}
                 filename = None
 
-                previous_value = None  # Track the previous value for value-only updates
                 for line in filtered_output:
                     if line.startswith(f"Diff for {yaml_file}"):
                         filename = yaml_file.split(".")[0]
                     elif line.strip() == "":  # Encounter a blank line
                         break
-                    elif line.startswith('-'):
-                        key, value = extract_key_value_pairs(line)
-                        if key == "value":
-                            previous_value = value.strip()  # Store the deleted value
-                        if key == "name":
-                            name = value.strip()
-                        elif key == "value":
-                            deletions.append((name, value.strip()))  # Store as tuple
                     elif line.startswith('+'):
                         key, value = extract_key_value_pairs(line)
-                        if key == "name":
-                            name = value.strip()
-                        elif key == "value":
-                            # If the value has been modified, use the previous value
-                            if previous_value:
-                                print(f"Modifying {name}: Replacing {previous_value} with {value.strip()} in {filename}.")
-                                additions.append((name, value.strip()))  # Store the new value
-                                previous_value = None  # Reset previous value after handling
-                            else:
-                                additions.append((name, value.strip()))  # Store as tuple
+                        if key and value:
+                            additions[key.strip()] = value.strip()  # Store as dictionary
+                    elif line.startswith('-'):
+                        key, value = extract_key_value_pairs(line)
+                        if key and value:
+                            deletions[key.strip()] = value.strip()  # Store as dictionary
 
-                # Create dynamic lists for each filename in changes_dict
+                # Create dynamically named lists for each filename
                 if additions:
-                    changes_dict[f"{filename}add"] = {name: value for name, value in additions}
+                    globals()[f"{filename}add"] = additions
                     merge_values.append(f"{filename}add")
-                if deletions and not additions:  # Only delete if there are no additions (to avoid duplication)
-                    changes_dict[f"{filename}delete"] = {name: value for name, value in deletions}
+                if deletions:
+                    globals()[f"{filename}delete"] = deletions
                     merge_values.append(f"{filename}delete")
 
     print("merge-values =", merge_values)
     for var in merge_values:
         # Format the output correctly
-        formatted_output = [f"'{name}':'{value}'" for name, value in changes_dict.get(var, {}).items()]
+        formatted_output = [f"'{key}':'{value}'" for key, value in globals().get(var, {}).items()]
         print(f"{var} = [{', '.join(formatted_output)}]")
 
-    # Call modify_json with changes_dict
-    modify_json(config_path, merge_values, changes_dict)
+    modify_json(config_path, merge_values)
 
 if __name__ == "__main__":
     main()
