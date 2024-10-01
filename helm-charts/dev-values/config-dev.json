@@ -1,7 +1,7 @@
 {
     "_comment_account": "This section defines ACCOUNT settings",
     "account": {
-      "replicaCount": 2,
+      "cloud.google.com/backend-config": {"env1": "http-abc-xyz-statement"}, 
       "app": {
         "name": "acc-xyz"
       },
@@ -12,7 +12,6 @@
       "image": {
         "image_name": "acc-xyz",
         "repository": 1,
-        "pullPolicy": "Always",
         "tag": "0.0.1"
       },
       "imagePullSecrets": [
@@ -50,7 +49,7 @@
   
     "_comment_admin": "This section defines ADMIN settings",
     "admin": {
-      "replicaCount": 1,
+      "replicaCount": 5,
       "app": {
         "name": "admin-xyz"
       },
@@ -104,10 +103,6 @@
           {
             "name": "admin-Key1",
             "value": "admin-key-value1"
-          },
-          {
-            "name": "admin-Key2",
-            "value": "admin-key-value2"
           }
         ]
       }
@@ -137,7 +132,7 @@
       "nameOverride": "pub-xyz",
       "fullnameOverride": "pub-xyz",
       "env": {
-        "pub_statement": [
+        "pub": [
           {
             "name": "MY_NEW_ID",
             "value": "new-pub-xyz"
@@ -165,6 +160,10 @@
           {
             "name": "MY_NEW_ID5",
             "value": "new-pub-555"
+          },
+          {
+            "name": "MY_NEW_ID6",
+            "value": "new-pub-666"
           }
         ]
       }
