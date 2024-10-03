@@ -1,5 +1,5 @@
 import json
-import collections
+#import collections
 
 def compare_and_update(source_file, destination_file):
     # Load source and destination config files

@@ -1,0 +1,185 @@
+# env2 values for test-app.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: ""
+
+app:
+  name: ""
+
+Release:
+  Maintainer: ""
+  name: ""
+
+image:
+  image_name: ""
+  repository: ""
+  pullPolicy: ""
+  tag: ""
+
+imagePullSecrets:
+  - name: ""
+nameOverride: ""
+fullnameOverride: ""
+env:
+  account_statement:
+    - name: MY_ID
+      value: ""
+    - name: INSTANCE_ID
+      value: ""
+    - name: MY_SENDER
+      value: ""
+    - name: NOTI_SENDER
+      value: ""
+    - name: URL_TLS_HOSTS
+      value: ""
+    - name: NOTI_XYZ
+      value: ""
+    - name: HOST_1
+      value: ""
+    - name: PORT_1
+      value: ""
+    - name: HOST_2
+      value: ""
+    - name: PORT_2
+      value: ""
+    - name: HOST_3
+      value: ""
+    - name: PORT_3
+      value: ""
+    - name: HOST_4
+      value: ""
+    - name: PORT_4
+      value: ""
+    - name: HOST_4
+      value: ""
+    - name: PORT_5
+      value: ""
+    - name: CASH_NAMESAPCE
+      value: ""
+    - name: TLS_HOSTS
+      value: ""
+    - name: SERVER_CA
+      value: ""
+    - name: SERVER_KEY
+      value: ""
+    - name: SESSION_TOKEN_KEY
+      value: ""
+    - name: ENCRYPTION_KEY_TEMP
+      value: ""
+    - name: OAUTH_CLIENT_SECRET
+      value: ""
+    - name: JWT_SECRET_TOKEN
+      value: ""
+    - name: API_ENDPOINT_USER_DATA
+      value: ""
+    - name: WEBHOOK_SECRET
+      value: ""
+    - name: IMAGE_STORAGE_URL
+      value: ""
+    - name: QUEUE_SIZE
+      value: ""
+    - name: MIN_CONNEC
+      value: ""
+    - name: OPEN_THRESHOLD
+      value: ""
+    - name: ERROR_RATE
+      value: ""
+    - name: RATE_WINDOW
+      value: ""
+
+containerPort: ""
+
+data:
+  enabled: ""
+
+serviceAccount:
+  create: ""
+  annotations: {}
+  name: 
+
+k8s_serviceaccount:
+  enabled: ""
+  k8s_serviceAccountName: ""
+
+podAnnotations:
+  sidecar.istio.io/proxyCPU: ""
+  sidecar.istio.io/proxyMemory: ""
+  sidecar.istio.io/proxyMemoryLimit: ""
+  sidecar.istio.io/proxyCPULimit: ""
+  cloud.google.com/backend-config: ""
+  cloud.google.com/neg: ""
+
+volume:
+  enabled: ""
+
+secrets:
+  enabled: ""
+
+securityContext: {}
+
+serviceAnnotations:
+  cloud.google.com/backend-config: ""
+  cloud.google.com/neg: ""
+  app.kubernetes.io/managed-by: ""
+  meta.helm.sh/release-namespace: ""
+
+service:
+  name: nostro-vostro
+  type: ""
+  port: ""
+  targetPort: ""
+
+ingress:
+  enabled: ""
+  className: ""
+  annotations:
+    cloud.google.com/backend-config: ""
+    cloud.google.com/neg: ""
+  hosts:
+    - host: nostro-vostro
+      paths:
+        - path: ""
+          pathType: ""
+  tls: []
+
+resources:
+  limits:
+    memory: ""
+    cpu: ""
+  requests:
+    memory: ""
+    cpu: ""
+
+autoscaling:
+  enabled: ""
+  minReplicas: ""
+  maxReplicas: ""
+  targetCPUUtilizationPercentage: ""
+
+vsconfig:
+  enabled: ""
+  gateway: ""
+  hostname: ""
+  value: ""
+  port: ""
+
+backendconfig:
+  enabled: ""
+  namespace: ""
+  timeoutSec: ""
+  healthCheck:
+    requestPath: ""
+    port: ""
+    type: ""
+  securityPolicy:
+    name: ""
+
+pdb:
+  minAvailable: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

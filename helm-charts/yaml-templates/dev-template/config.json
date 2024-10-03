@@ -1,266 +1,5 @@
 {
-  "nostro-vostro": {
-    "replicaCount": 3,
-    "app": {
-      "name": "nostro-vostro",
-      "id": 1
-    },
-    "Release": {
-      "Maintainer": "mobilecapital",
-      "name": "nostro-vostro"
-    },
-    "image": {
-      "image_name": "my_image",
-      "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
-      "tag": "0.0.4"
-    },
-    "imagePullSecrets": [
-      {
-        "name": "regvostro"
-      }
-    ],
-    "nameOverride": "nostro-vostro",
-    "fullnameOverride": "nostro-vostro",
-    "env": {
-      "account_statement": [
-        {
-          "name": "INSTANCE_ID",
-          "value": "1111"
-        },
-        {
-          "name": "MY_SENDER",
-          "value": "Client"
-        },
-        {
-          "name": "NOTI_SENDER",
-          "value": "MySender"
-        },
-        {
-          "name": "URL_TLS_HOSTS",
-          "value": "myserver-sit.xyz.com"
-        },
-        {
-          "name": "NOTI_XYZ",
-          "value": "http://env1.random.org/path/ENV1"
-        },
-        {
-          "name": "HOST_1",
-          "value": "1.1.1.1"
-        },
-        {
-          "name": "PORT_1",
-          "value": "3000"
-        },
-        {
-          "name": "HOST_2",
-          "value": "2.2.2.2"
-        },
-        {
-          "name": "PORT_2",
-          "value": "3000"
-        },
-        {
-          "name": "HOST_3",
-          "value": "3.3.3.3"
-        },
-        {
-          "name": "PORT_3",
-          "value": "3000"
-        },
-        {
-          "name": "HOST_4",
-          "value": "4.4.4.4"
-        },
-        {
-          "name": "PORT_4",
-          "value": "3000"
-        },
-        {
-          "name": "HOST_4",
-          "value": "5.5.5.5"
-        },
-        {
-          "name": "PORT_5",
-          "value": "3000"
-        },
-        {
-          "name": "CASH_NAMESAPCE",
-          "value": "myenv1-chanel"
-        },
-        {
-          "name": "TLS_HOSTS",
-          "value": "1.1.1.1:4333,2.2.2.2:4333,3.3.3.3:4333,4.4.4.4:4333,5.5.5.5:4333,6.6.6.6:4333,7.7.7.7:4333"
-        },
-        {
-          "name": "SERVER_CA",
-          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-        },
-        {
-          "name": "SERVER_KEY",
-          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-        },
-        {
-          "name": "SESSION_TOKEN_KEY",
-          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-        },
-        {
-          "name": "ENCRYPTION_KEY_TEMP",
-          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-        },
-        {
-          "name": "OAUTH_CLIENT_SECRET",
-          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-        },
-        {
-          "name": "JWT_SECRET_TOKEN",
-          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-        },
-        {
-          "name": "API_ENDPOINT_USER_DATA",
-          "value": "http://api.example.com/users/12345"
-        },
-        {
-          "name": "WEBHOOK_SECRET",
-          "value": "https://webhooks.example.com/receive"
-        },
-        {
-          "name": "IMAGE_STORAGE_URL",
-          "value": "http://images.example.com/uploads/profile.jpg"
-        },
-        {
-          "name": "QUEUE_SIZE",
-          "value": "10"
-        },
-        {
-          "name": "MIN_CONNEC",
-          "value": "1"
-        },
-        {
-          "name": "OPEN_THRESHOLD",
-          "value": "1"
-        },
-        {
-          "name": "ERROR_RATE",
-          "value": "10"
-        },
-        {
-          "name": "RATE_WINDOW",
-          "value": "2"
-        },
-        {
-          "name": "MY_ID_0",
-          "value": "nostro-vostro"
-        }
-      ]
-    },
-    "containerPort": 8080,
-    "data": {
-      "enabled": true
-    },
-    "serviceAccount": {
-      "create": false,
-      "annotations": {},
-      "name": ""
-    },
-    "k8s_serviceaccount": {
-      "enabled": true,
-      "k8s_serviceAccountName": "kube-svc"
-    },
-    "podAnnotations": {
-      "sidecar.istio.io/proxyCPU": "50m",
-      "sidecar.istio.io/proxyMemory": "25Mi",
-      "sidecar.istio.io/proxyMemoryLimit": "100Mi",
-      "sidecar.istio.io/proxyCPULimit": "20m",
-      "cloud.google.com/backend-config": "{\"env22\": \"http-myhc-nostro-vostro\"}",
-      "cloud.google.com/neg": "{\"ingress\": true}"
-    },
-    "volume": {
-      "enabled": false
-    },
-    "secrets": {
-      "enabled": false
-    },
-    "securityContext": {},
-    "serviceAnnotations": {
-      "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
-      "cloud.google.com/neg": "{\"ingress\": true}",
-      "app.kubernetes.io/managed-by": "Helm",
-      "meta.helm.sh/release-namespace": "env2"
-    },
-    "service": {
-      "name": "nostro-vostro",
-      "type": "ClusterIP",
-      "port": 80,
-      "targetPort": 8080
-    },
-    "ingress": {
-      "enabled": true,
-      "className": "",
-      "annotations": {
-        "cloud.google.com/backend-config": {
-          "env2": "http-myhc-nostro-vostro"
-        },
-        "cloud.google.com/neg": {
-          "ingress": true
-        }
-      },
-      "hosts": [
-        {
-          "host": "nostro-vostro",
-          "paths": [
-            {
-              "path": "/nostro-vostro",
-              "pathType": "ImplementationSpecific"
-            }
-          ]
-        }
-      ],
-      "tls": []
-    },
-    "resources": {
-      "limits": {
-        "memory": "52Mi",
-        "cpu": "50m"
-      },
-      "requests": {
-        "memory": "18Mi",
-        "cpu": "23m"
-      }
-    },
-    "autoscaling": {
-      "enabled": false,
-      "minReplicas": 5,
-      "maxReplicas": 110,
-      "targetCPUUtilizationPercentage": 70
-    },
-    "vsconfig": {
-      "enabled": true,
-      "gateway": "istio-system/istio-gateway",
-      "hostname": "*",
-      "value": "/nostro-vostro",
-      "port": 80
-    },
-    "backendconfig": {
-      "enabled": true,
-      "namespace": "env2",
-      "timeoutSec": 20,
-      "healthCheck": {
-        "requestPath": "/healthy",
-        "port": 8080,
-        "type": "HTTP"
-      },
-      "securityPolicy": {
-        "name": "fog-fw-policy"
-      }
-    },
-    "pdb": {
-      "minAvailable": 0
-    },
-    "nodeSelector": {},
-    "tolerations": [],
-    "affinity": {}
-  },
-  "admin": {
+  "account": {
     "replicaCount": 1,
     "app": {
       "name": "nostro-vostro"
@@ -432,8 +171,12 @@
       "sidecar.istio.io/proxyMemory": "25Mi",
       "sidecar.istio.io/proxyMemoryLimit": "100Mi",
       "sidecar.istio.io/proxyCPULimit": "20m",
-      "cloud.google.com/backend-config": "{\"env22\": \"http-myhc-nostro-vostro\"}",
-      "cloud.google.com/neg": "{\"ingress\": true}"
+      "cloud.google.com/backend-config": {
+        "env22": "http-myhc-nostro-vostro"
+      },
+      "cloud.google.com/neg": {
+        "ingress": true
+      }
     },
     "volume": {
       "enabled": false
@@ -443,10 +186,14 @@
     },
     "securityContext": {},
     "serviceAnnotations": {
-      "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+      "cloud.google.com/backend-config": {
+        "env2": "http-myhc-nostro-vostro"
+      },
+      "cloud.google.com/neg": {
+        "ingress": true
+      },
       "app.kubernetes.io/managed-by": "Helm",
-      "meta.helm.sh/release-namespace": "env2",
-      "cloud.google.com/neg": "{\"ingress\": true}"
+      "meta.helm.sh/release-namespace": "env2"
     },
     "service": {
       "name": "nostro-vostro",
@@ -470,8 +217,269 @@
           "host": "nostro-vostro",
           "paths": [
             {
-              "path": "/nostro-vostro",
-              "pathType": "ImplementationSpecific"
+              "path": "",
+              "pathType": ""
+            }
+          ]
+        }
+      ],
+      "tls": []
+    },
+    "resources": {
+      "limits": {
+        "memory": "52Mi",
+        "cpu": "50m"
+      },
+      "requests": {
+        "memory": "18Mi",
+        "cpu": "23m"
+      }
+    },
+    "autoscaling": {
+      "enabled": false,
+      "minReplicas": 5,
+      "maxReplicas": 110,
+      "targetCPUUtilizationPercentage": 70
+    },
+    "vsconfig": {
+      "enabled": true,
+      "gateway": "istio-system/istio-gateway",
+      "hostname": "*",
+      "value": "/nostro-vostro",
+      "port": 80
+    },
+    "backendconfig": {
+      "enabled": true,
+      "namespace": "env2",
+      "timeoutSec": 20,
+      "healthCheck": {
+        "requestPath": "/healthy",
+        "port": 8080,
+        "type": "HTTP"
+      },
+      "securityPolicy": {
+        "name": "fog-fw-policy"
+      }
+    },
+    "pdb": {
+      "minAvailable": 0
+    },
+    "nodeSelector": {},
+    "tolerations": [],
+    "affinity": {}
+  },
+  "admin": {
+    "replicaCount": 4,
+    "app": {
+      "name": "admin"
+    },
+    "Release": {
+      "Maintainer": "mobilecapital",
+      "name": "nostro-vostro"
+    },
+    "image": {
+      "image_name": "my_admin_image",
+      "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
+      "pullPolicy": "Always",
+      "tag": "0.0.4"
+    },
+    "imagePullSecrets": [
+      {
+        "name": "regvostro"
+      }
+    ],
+    "nameOverride": "admin",
+    "fullnameOverride": "admin",
+    "env": {
+      "account_statement": [
+        {
+          "name": "MY_ID",
+          "value": "admin"
+        },
+        {
+          "name": "INSTANCE_ID",
+          "value": "1111"
+        },
+        {
+          "name": "MY_SENDER",
+          "value": "Client"
+        },
+        {
+          "name": "NOTI_SENDER",
+          "value": "MySender"
+        },
+        {
+          "name": "URL_TLS_HOSTS",
+          "value": "myserver-sit.xyz.com"
+        },
+        {
+          "name": "NOTI_XYZ",
+          "value": "http://env1.random.org/path/ENV1"
+        },
+        {
+          "name": "HOST_1",
+          "value": "1.1.1.1"
+        },
+        {
+          "name": "PORT_1",
+          "value": "3000"
+        },
+        {
+          "name": "HOST_2",
+          "value": "2.2.2.2"
+        },
+        {
+          "name": "PORT_2",
+          "value": "3000"
+        },
+        {
+          "name": "HOST_3",
+          "value": "3.3.3.3"
+        },
+        {
+          "name": "PORT_3",
+          "value": "3000"
+        },
+        {
+          "name": "HOST_4",
+          "value": "4.4.4.4"
+        },
+        {
+          "name": "PORT_4",
+          "value": "3000"
+        },
+        {
+          "name": "HOST_4",
+          "value": "5.5.5.5"
+        },
+        {
+          "name": "PORT_5",
+          "value": "3000"
+        },
+        {
+          "name": "CASH_NAMESAPCE",
+          "value": "myenv1-chanel"
+        },
+        {
+          "name": "TLS_HOSTS",
+          "value": "1.1.1.1:4333,2.2.2.2:4333,3.3.3.3:4333,4.4.4.4:4333,5.5.5.5:4333,6.6.6.6:4333,7.7.7.7:4333"
+        },
+        {
+          "name": "SERVER_CA",
+          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+        },
+        {
+          "name": "SERVER_KEY",
+          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+        },
+        {
+          "name": "SESSION_TOKEN_KEY",
+          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+        },
+        {
+          "name": "ENCRYPTION_KEY_TEMP",
+          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+        },
+        {
+          "name": "OAUTH_CLIENT_SECRET",
+          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+        },
+        {
+          "name": "JWT_SECRET_TOKEN",
+          "value": "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+        },
+        {
+          "name": "API_ENDPOINT_USER_DATA",
+          "value": "http://api.example.com/users/12345"
+        },
+        {
+          "name": "WEBHOOK_SECRET",
+          "value": "https://webhooks.example.com/receive"
+        },
+        {
+          "name": "IMAGE_STORAGE_URL",
+          "value": "http://images.example.com/uploads/profile.jpg"
+        },
+        {
+          "name": "QUEUE_SIZE",
+          "value": "10"
+        },
+        {
+          "name": "MIN_CONNEC",
+          "value": "1"
+        },
+        {
+          "name": "OPEN_THRESHOLD",
+          "value": "1"
+        },
+        {
+          "name": "ERROR_RATE",
+          "value": "10"
+        },
+        {
+          "name": "RATE_WINDOW",
+          "value": "2"
+        }
+      ]
+    },
+    "containerPort": 8080,
+    "data": {
+      "enabled": true
+    },
+    "serviceAccount": {
+      "create": false,
+      "annotations": {},
+      "name": ""
+    },
+    "k8s_serviceaccount": {
+      "enabled": true,
+      "k8s_serviceAccountName": "kube-svc"
+    },
+    "podAnnotations": {
+      "sidecar.istio.io/proxyCPU": "50m",
+      "sidecar.istio.io/proxyMemory": "25Mi",
+      "sidecar.istio.io/proxyMemoryLimit": "100Mi",
+      "sidecar.istio.io/proxyCPULimit": "20m",
+      "cloud.google.com/backend-config": "{\"env22\": \"http-myhc-admin\"}",
+      "cloud.google.com/neg": "{\"ingress\": true}"
+    },
+    "volume": {
+      "enabled": false
+    },
+    "secrets": {
+      "enabled": false
+    },
+    "securityContext": {},
+    "serviceAnnotations": {
+      "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-admin\"}",
+      "cloud.google.com/neg": "{\"ingress\": true}",
+      "app.kubernetes.io/managed-by": "Helm",
+      "meta.helm.sh/release-namespace": "env2"
+    },
+    "service": {
+      "name": "nostro-vostro",
+      "type": "ClusterIP",
+      "port": 80,
+      "targetPort": 8080
+    },
+    "ingress": {
+      "enabled": true,
+      "className": "",
+      "annotations": {
+        "cloud.google.com/backend-config": {
+          "env2": "http-myhc-admin"
+        },
+        "cloud.google.com/neg": {
+          "ingress": true
+        }
+      },
+      "hosts": [
+        {
+          "host": "nostro-vostro",
+          "paths": [
+            {
+              "path": "",
+              "pathType": ""
             }
           ]
         }
@@ -693,8 +701,12 @@
       "sidecar.istio.io/proxyMemory": "25Mi",
       "sidecar.istio.io/proxyMemoryLimit": "100Mi",
       "sidecar.istio.io/proxyCPULimit": "20m",
-      "cloud.google.com/backend-config": "{\"env22\": \"http-myhc-nostro-vostro\"}",
-      "cloud.google.com/neg": "{\"ingress\": true}"
+      "cloud.google.com/backend-config": {
+        "env22": "http-myhc-nostro-vostro"
+      },
+      "cloud.google.com/neg": {
+        "ingress": true
+      }
     },
     "volume": {
       "enabled": false
@@ -704,8 +716,12 @@
     },
     "securityContext": {},
     "serviceAnnotations": {
-      "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
-      "cloud.google.com/neg": "{\"ingress\": true}",
+      "cloud.google.com/backend-config": {
+        "env2": "http-myhc-nostro-vostro"
+      },
+      "cloud.google.com/neg": {
+        "ingress": true
+      },
       "app.kubernetes.io/managed-by": "Helm",
       "meta.helm.sh/release-namespace": "env2"
     },
@@ -731,8 +747,8 @@
           "host": "nostro-vostro",
           "paths": [
             {
-              "path": "/nostro-vostro",
-              "pathType": "ImplementationSpecific"
+              "path": "",
+              "pathType": ""
             }
           ]
         }
