@@ -5,26 +5,32 @@
 replicaCount: 1
 
 app:
-  name: "publisher"
+  name: "nostro-vostro"
+
+test1:
+  test2:
+    name: "test value"
+    id: "1001"
+    code: "red"
 
 Release:
   Maintainer: "mobilecapital"
-  name: "publisher"
+  name: "nostro-vostro"
 
 image:
   image_name: "my_image"
-  repository: "myrepo.yourrepo.com/mobilecapital/publisher"
+  repository: "myrepo.yourrepo.com/mobilecapital/nostro-vostro"
   pullPolicy: "Always"
   tag: "0.0.4"
 
 imagePullSecrets:
 - name: "regvostro"
-nameOverride: "publisher"
-fullnameOverride: "publisher"
+nameOverride: "nostro-vostro"
+fullnameOverride: "nostro-vostro"
 env:
   account_statement:
   - name: MY_ID
-    value: "publisher"
+    value: "nostro-vostro"
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER
@@ -107,7 +113,7 @@ podAnnotations:
   sidecar.istio.io/proxyMemory: "25Mi"
   sidecar.istio.io/proxyMemoryLimit: "100Mi"
   sidecar.istio.io/proxyCPULimit: "20m"
-  cloud.google.com/backend-config: {"env22": "http-myhc-publisher"}
+  cloud.google.com/backend-config: {"env22": "http-myhc-nostro-vostro"}
   cloud.google.com/neg: {"ingress": true}
 
 volume:
@@ -119,13 +125,13 @@ secrets:
 securityContext: {}
 
 serviceAnnotations:
-  cloud.google.com/backend-config: {"env2": "http-myhc-publisher"}
+  cloud.google.com/backend-config: {"env2": "http-myhc-nostro-vostro"}
   cloud.google.com/neg: {"ingress": true}
   app.kubernetes.io/managed-by: "Helm"
   meta.helm.sh/release-namespace: "env2"
 
 service:
-  name: publisher
+  name: nostro-vostro
   type: "ClusterIP"
   port: 80
   targetPort: 8080
@@ -135,11 +141,11 @@ ingress:
   className: ""
   annotations:
     cloud.google.com/backend-config:
-      env2: http-myhc-publisher
+      env2: http-myhc-nostro-vostro
     cloud.google.com/neg:
       ingress: true
   hosts:
-  - host: publisher
+  - host: nostro-vostro
     paths:
     - path: ""
       pathType: ""
@@ -163,7 +169,7 @@ vsconfig:
   enabled: true
   gateway: "istio-system/istio-gateway"
   hostname: "*"
-  value: "/publisher"
+  value: "/nostro-vostro"
   port: 80
 
 backendconfig:
