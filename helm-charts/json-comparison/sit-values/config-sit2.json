@@ -1,16 +1,15 @@
 {
     "account": {
-        "replicaCount": 5,
+        "replicaCount": 1,
         "app": {
-            "name": "sit_acc",
-            "id": "4"
+            "name": "sit_acc"
         },
         "Release": {
             "Maintainer": "mobilecapital",
-            "name": "sit_acc"
+            "name": "nostro-vostro"
         },
         "image": {
-            "image_name": "my_image",
+            "image_name": "/1.0.0-b230",
             "repository": "myrepo.yourrepo.com/mobilecapital/sit_acc",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -263,19 +262,26 @@
         },
         "nodeSelector": {},
         "tolerations": [],
-        "affinity": {}
+        "affinity": {},
+        "test1": {
+            "test2": {
+                "name": "test value",
+                "id": "1001",
+                "code": "red"
+            }
+        }
     },
     "admin": {
         "replicaCount": 4,
         "app": {
-            "name": "my_sit_sit_admin_name"
+            "name": "my_admin_name"
         },
         "Release": {
             "Maintainer": "mobilecapital",
             "name": "nostro-vostro"
         },
         "image": {
-            "image_name": "my_sit_sit_admin_image",
+            "image_name": "/1.0.0-b330",
             "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -544,7 +550,7 @@
             "name": "sit_publisher"
         },
         "image": {
-            "image_name": "my_image",
+            "image_name": "/1.0.1-b230",
             "repository": "myrepo.yourrepo.com/mobilecapital/sit_publisher",
             "pullPolicy": "Always",
             "tag": "0.0.4"

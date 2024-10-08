@@ -2,6 +2,7 @@ import os
 import json
 import csv
 import yaml
+from openpyxl import Workbook
 
 def yaml_to_json(folder_path):
     json_data = {}
@@ -34,7 +35,7 @@ def update_image_name(json_data, txt_file_path):
 
 def compare_json_files(old_data, new_data):
     changes = []
-    
+
     # Check for changes in the JSON files
     for root in new_data.keys():
         if root not in old_data:
@@ -67,7 +68,6 @@ def compare(old, new, root, changes, path=''):
             if item not in new:
                 changes.append((root, 'delete', path, json.dumps(item, indent=4), 'Deleted'))
 
-
     else:
         if old != new:
             changes.append((root, 'modify', path, json.dumps(new, indent=4), 'Modified'))
@@ -81,12 +81,54 @@ def write_changes_to_csv(changes, csv_file_path):
             service_name, change_type, key, value, comment = change
             csv_writer.writerow([service_name, change_type, key, value, comment])
 
+def write_changes_to_excel(changes, excel_file_path, envs):
+    # Create a new workbook and add sheets
+    wb = Workbook()
+
+    # Write the first sheet with full data
+    first_sheet = wb.active
+    first_sheet.title = envs[0]  # Name the first sheet
+
+    # Write the headers
+    first_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Comment'])
+
+    # Write the changes to the first sheet
+    for change in changes:
+        service_name, change_type, key, value, comment = change
+        first_sheet.append([service_name, change_type, key, value, comment])
+
+    # Write the remaining sheets (copy content but clear "Value" column)
+    for env in envs[1:]:
+        new_sheet = wb.create_sheet(title=env)
+        new_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Comment'])
+
+        for row in first_sheet.iter_rows(min_row=2, values_only=True):
+            # Copy all rows but clear the "Value" column (4th column)
+            new_sheet.append([row[0], row[1], row[2], '', row[4]])
+
+    # Save the workbook to a file
+    wb.save(excel_file_path)
+
+def get_input(prompt):
+    attempts = 3
+    for _ in range(attempts):
+        value = input(prompt)
+        if value:
+            return value
+        print("Input cannot be empty. Please try again.")
+    print("Cannot proceed with execution as no input was entered.")
+    exit(1)
+
 def main():
-    folder_path = input("Enter the path of the folder containing YAML files: ")
-    previous_json_path = input("Enter the path of the previous JSON file: ")
-    new_json_path = input("Enter the path to save the new JSON file: ")
-    txt_file_path = input("Enter the path of the text file with mappings: ")
-    csv_file_path = input("Enter the path to save the changes CSV file: ")
+    folder_path = get_input("Enter the path of the folder containing YAML files: ")
+    previous_json_path = get_input("Enter the path of the previous JSON file: ")
+    new_json_path = get_input("Enter the path to save the new JSON file: ")
+    txt_file_path = get_input("Enter the path of the text file with mappings: ")
+    csv_file_path = get_input("Enter the path to save the changes CSV file: ")
+    excel_file_path = get_input("Enter the path to save the Excel file: ")
+
+    # Environment list (for this example, you can modify based on your use case)
+    envs = ['dev', 'sit', 'uat']  # Example environments
 
     # Convert YAML to JSON
     json_data = yaml_to_json(folder_path)
@@ -111,6 +153,9 @@ def main():
 
     # Write changes to CSV
     write_changes_to_csv(changes, csv_file_path)
+
+    # Write changes to Excel with multiple sheets
+    write_changes_to_excel(changes, excel_file_path, envs)
 
 if __name__ == '__main__':
     main()
