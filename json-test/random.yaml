@@ -1,0 +1,30 @@
+
+imagePullSecrets:
+- name: "regvostro"
+
+env:
+  account_statement:
+  - name: MY_ID
+    value: "nostro-vostro"
+  - name: INSTANCE_ID
+    value: "1111"
+  - name: MY_SENDER
+    value: "Client"
+  - name: ENCRYPTION_KEY_TEMP
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+
+
+podAnnotations:
+  sidecar.istio.io/proxyCPU: "50m"
+  sidecar.istio.io/proxyMemory: "25Mi"
+  sidecar.istio.io/proxyMemoryLimit: "100Mi"
+  sidecar.istio.io/proxyCPULimit: "20m"
+  cloud.google.com/backend-config: {"env22": "http-myhc-nostro-vostro"}
+  cloud.google.com/neg: {"ingress": true}
+
+serviceAnnotations:
+  cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro"}'
+  cloud.google.com/neg: '{"ingress": true}'
+  app.kubernetes.io/managed-by: "Helm"
+  meta.helm.sh/release-namespace: "env2"
+

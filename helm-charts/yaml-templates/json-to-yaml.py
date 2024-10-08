@@ -1,79 +1,52 @@
-#working script for acc.yaml
-
-import ruamel.yaml
+import os
+import yaml
 import json
 
-# Load the YAML file with ruamel.yaml to preserve structure
-def load_yaml_file(file_path):
-    yaml = ruamel.yaml.YAML()
-    yaml.preserve_quotes = True  # Preserve quotes and formatting
-    with open(file_path, 'r') as f:
-        return yaml.load(f), yaml
+# Function to create YAML files with proper formatting
+def create_yaml_files_from_json(json_file_path):
+    # Load the updated JSON file
+    with open(json_file_path, 'r') as json_file:
+        json_data = json.load(json_file)
 
-# Load the JSON file
-def load_json_file(json_path):
-    with open(json_path, 'r') as f:
-        return json.load(f)
+    # Create the 'updated-yaml-files' folder if it doesn't exist
+    output_folder = 'updated-yaml-files'
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
 
-# Recursive function to populate values from JSON into YAML
-def populate_yaml(yaml_data, json_data, json_root, parent_key=""):
-    for key, value in yaml_data.items():
-        full_key_path = f"{parent_key}.{key}" if parent_key else key
+    # Iterate through each root object in the JSON data
+    for root_object, data in json_data.items():
+        yaml_file_path = os.path.join(output_folder, f"{root_object}.yaml")
 
-        if isinstance(value, dict):
-            # Recursively handle nested dictionaries
-            if key in json_root:
-                populate_yaml(value, json_data, json_root[key], full_key_path)
-            else:
-                print(f"Key '{full_key_path}' not found in JSON.")
-        elif isinstance(value, list):
-            # Handle lists, such as 'imagePullSecrets' or 'env.account_statement'
-            for idx, item in enumerate(value):
-                if isinstance(item, dict):
-                    # Match each dictionary in the list by checking each key in the dictionary
-                    for item_key, item_value in item.items():
-                        if item_key in json_root[key][idx]:
-                            json_value = json_root[key][idx][item_key]
-                            if item_value == "" or item_value is None:  # Update only if the YAML value is empty
-                                item[item_key] = json_value
-                                print(f"Populating list key: {full_key_path}[{idx}].{item_key} with value: {json_value}")
-                        else:
-                            print(f"Key '{full_key_path}[{idx}].{item_key}' not found in JSON.")
-        else:
-            # Handle direct key-value pairs in the YAML
-            if key in json_root:
-                json_value = json_root[key]
-                if value == "" or value is None:  # Update only if the YAML value is empty
-                    yaml_data[key] = json_value
-                    print(f"Populating key: {full_key_path} with value: {json_value}")
-            else:
-                print(f"Key '{full_key_path}' not found in JSON.")
+        # Process each key-value pair to handle lists of dictionaries and dictionaries
+        processed_data = process_json_data(data)
 
-# Save the updated YAML file
-def save_yaml_file(file_path, yaml_data, yaml_instance):
-    with open(file_path, 'w') as f:
-        yaml_instance.dump(yaml_data, f)
+        # Save the processed data to a YAML file
+        with open(yaml_file_path, 'w') as yaml_file:
+            yaml.dump(processed_data, yaml_file, default_flow_style=False, sort_keys=False)
 
-# Main function
-def update_yaml_from_json(yaml_file_path, json_data):
-    yaml_file_name = yaml_file_path.split('/')[-1].split('.')[0]  # Extract root object name from YAML filename
-    yaml_data, yaml_instance = load_yaml_file(yaml_file_path)
-    
-    if yaml_file_name in json_data:
-        # Pass the corresponding root object of the JSON
-        populate_yaml(yaml_data, json_data, json_data[yaml_file_name])
-        save_yaml_file(yaml_file_path, yaml_data, yaml_instance)
+# Function to process JSON data
+def process_json_data(data):
+    if isinstance(data, list):
+        # Process lists of dictionaries
+        return [process_json_data(item) for item in data]
+    elif isinstance(data, dict):
+        # For dictionaries, format them as JSON strings
+        return {key: process_json_data(value) for key, value in data.items()}
+    elif isinstance(data, str):
+        # Enclose string values in double quotes
+        return f"{data}"
+    elif isinstance(data, (int, float, bool)):
+        # Return non-string types as is
+        return data
+    elif data is None:
+        # Return empty string for NoneType values
+        return '""'
     else:
-        print(f"No matching root object found in JSON for YAML file: {yaml_file_name}")
+        # If data is something else, return it as a string
+        return f'"{data}"'
 
-# Usage
-def main():
-    yaml_file_path = 'C://Users//Surabhi//Desktop//Automation//CICD_Testing//cicd-poc//helm-charts//yaml-templates//dev-template//account.yaml'  # path to the YAML file
-    json_file_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\yaml-templates\dev-template\config-dev.json'  # path to the JSON file
+# Path to the updated JSON file
+json_file_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\yaml-templates\sit-template\config-sit.json'
 
-    json_data = load_json_file(json_file_path)
-    update_yaml_from_json(yaml_file_path, json_data)
-
-if __name__ == "__main__":
-    main()
-
+# Create YAML files from the JSON file
+create_yaml_files_from_json(json_file_path)

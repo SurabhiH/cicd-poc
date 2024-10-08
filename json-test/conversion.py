@@ -59,17 +59,10 @@ def save_json_to_file(json_data, output_file):
 
 # Specify the folder path, excel file, and output file
 folder_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\sit-values'
-excel_file_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\release_note_promote_branch_x.xlsx'
+
 output_file = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\sit-values\config-sit2.json'
 
-# Ask the user for the sheet name
-sheet_name = input("Please enter the sheet name from which the values should be read: ")
 
 # Create a single JSON from YAML files
 json_data = read_yaml_files_to_json(folder_path)
 
-# Apply changes based on the Excel file and the selected sheet
-updated_json = apply_changes_to_json(json_data, excel_file_path, sheet_name)
-
-# Save the updated JSON to a file
-save_json_to_file(updated_json, output_file)
