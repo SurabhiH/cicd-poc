@@ -17,21 +17,6 @@ def yaml_to_json(folder_path):
 
     return json_data
 
-def update_image_name(json_data, txt_file_path):
-    # Read the mappings from the text file
-    with open(txt_file_path, 'r') as txt_file:
-        mappings = {}
-        for line in txt_file:
-            if ':' in line:
-                key, value = line.strip().split(':')
-                mappings[key.strip()] = value.strip().strip('"')
-
-    # Update JSON data based on mappings
-    for root, content in json_data.items():
-        if 'image' in content and 'image_name' in content['image']:
-            image_key = content['image']['image_name']
-            if root in mappings:
-                json_data[root]['image']['image_name'] = mappings[root]
 
 def compare_json_files(old_data, new_data):
     changes = []
@@ -123,7 +108,6 @@ def main():
     folder_path = get_input("Enter the path of the folder containing YAML files: ")
     previous_json_path = get_input("Enter the path of the previous JSON file: ")
     new_json_path = get_input("Enter the path to save the new JSON file: ")
-    txt_file_path = get_input("Enter the path of the text file with mappings: ")
     csv_file_path = get_input("Enter the path to save the changes CSV file: ")
     excel_file_path = get_input("Enter the path to save the Excel file: ")
 
@@ -132,9 +116,6 @@ def main():
 
     # Convert YAML to JSON
     json_data = yaml_to_json(folder_path)
-
-    # Update image_name based on the text file
-    update_image_name(json_data, txt_file_path)
 
     # Save the new JSON data
     with open(new_json_path, 'w') as new_json_file:

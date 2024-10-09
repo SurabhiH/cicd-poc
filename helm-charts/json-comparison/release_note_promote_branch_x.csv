@@ -1,8 +1,7 @@
 Service name,Change Request,Key,Value,Comment
 account,modify,replicaCount,1,Modified
-account,delete,app/id,4,Deleted
+account,delete,app/id,5,Deleted
 account,add,Release/name,"""nostro-vostro""",Added
-account,modify,image/image_name,"""/1.0.0-b230""",Modified
 account,add,test1,"{
     ""test2"": {
         ""name"": ""test value"",
@@ -10,6 +9,3 @@ account,add,test1,"{
         ""code"": ""red""
     }
 }",Added
-admin,modify,app/name,"""my_admin_name""",Modified
-admin,modify,image/image_name,"""/1.0.0-b330""",Modified
-publisher,modify,image/image_name,"""/1.0.1-b230""",Modified

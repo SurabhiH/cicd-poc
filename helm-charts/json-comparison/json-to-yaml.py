@@ -33,7 +33,7 @@ def process_json_data(data):
         return {key: process_json_data(value) for key, value in data.items()}
     elif isinstance(data, str):
         # Enclose string values in double quotes
-        return f"{data}"
+        return str(data)
     elif isinstance(data, (int, float, bool)):
         # Return non-string types as is
         return data
@@ -45,12 +45,18 @@ def process_json_data(data):
         return f'"{data}"'
 
 # Main function to take input paths and create YAML files
-if __name__ == "__main__":
+def main():
     # Input JSON file path
-    json_file_path = input("Enter the path of the JSON file: ")
+    #json_file_path = input("Enter the path of the JSON file: ")
+    json_file_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\sit-values copy\config-sit2.json'
     
     # Output folder path to store YAML files
-    output_folder = input("Enter the path of the folder to save the YAML files: ")
-    
+    #output_folder = input("Enter the path of the folder to save the YAML files: ")
+    output_folder = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\sit-values copy'
+
     # Create YAML files from the JSON file
     create_yaml_files_from_json(json_file_path, output_folder)
+
+
+if __name__ == "__main__":
+    main()

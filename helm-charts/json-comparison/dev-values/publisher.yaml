@@ -107,8 +107,8 @@ podAnnotations:
   sidecar.istio.io/proxyMemory: "25Mi"
   sidecar.istio.io/proxyMemoryLimit: "100Mi"
   sidecar.istio.io/proxyCPULimit: "20m"
-  cloud.google.com/backend-config: {"env22": "http-myhc-publisher"}
-  cloud.google.com/neg: {"ingress": true}
+  cloud.google.com/backend-config: '{"env22": "http-myhc-publisher"}'
+  cloud.google.com/neg: '{"ingress": true}'
 
 volume:
   enabled: false
@@ -119,8 +119,8 @@ secrets:
 securityContext: {}
 
 serviceAnnotations:
-  cloud.google.com/backend-config: {"env2": "http-myhc-publisher"}
-  cloud.google.com/neg: {"ingress": true}
+  cloud.google.com/backend-config: '{"env2": "http-myhc-publisher"}'
+  cloud.google.com/neg: '{"ingress": true}'
   app.kubernetes.io/managed-by: "Helm"
   meta.helm.sh/release-namespace: "env2"
 

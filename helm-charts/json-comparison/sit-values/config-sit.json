@@ -2,16 +2,15 @@
     "account": {
         "replicaCount": 5,
         "app": {
-            "name": "sit_acc",
-            "id": "4"
+            "name": "sit_account"
         },
         "Release": {
             "Maintainer": "mobilecapital",
-            "name": "sit_acc"
+            "name": "sit_account"
         },
         "image": {
             "image_name": "my_image",
-            "repository": "myrepo.yourrepo.com/mobilecapital/sit_acc",
+            "repository": "myrepo.yourrepo.com/mobilecapital/sit_account",
             "pullPolicy": "Always",
             "tag": "0.0.4"
         },
@@ -20,13 +19,13 @@
                 "name": "regvostro"
             }
         ],
-        "nameOverride": "sit_acc",
-        "fullnameOverride": "sit_acc",
+        "nameOverride": "sit_account",
+        "fullnameOverride": "sit_account",
         "env": {
             "account_statement": [
                 {
                     "name": "MY_ID",
-                    "value": "sit_acc"
+                    "value": "sit_account"
                 },
                 {
                     "name": "INSTANCE_ID",
@@ -172,7 +171,7 @@
             "sidecar.istio.io/proxyMemory": "25Mi",
             "sidecar.istio.io/proxyMemoryLimit": "100Mi",
             "sidecar.istio.io/proxyCPULimit": "20m",
-            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-sit_acc\"}",
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-sit_account\"}",
             "cloud.google.com/neg": "{\"ingress\": true}"
         },
         "volume": {
@@ -183,17 +182,13 @@
         },
         "securityContext": {},
         "serviceAnnotations": {
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-sit_acc"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            },
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-sit_account\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}",
             "app.kubernetes.io/managed-by": "Helm",
             "meta.helm.sh/release-namespace": "env2"
         },
         "service": {
-            "name": "sit_acc",
+            "name": "sit_account",
             "type": "ClusterIP",
             "port": 80,
             "targetPort": 8080
@@ -203,7 +198,7 @@
             "className": "",
             "annotations": {
                 "cloud.google.com/backend-config": {
-                    "env2": "http-myhc-sit_acc"
+                    "env2": "http-myhc-sit_account"
                 },
                 "cloud.google.com/neg": {
                     "ingress": true
@@ -211,7 +206,7 @@
             },
             "hosts": [
                 {
-                    "host": "sit_acc",
+                    "host": "sit_account",
                     "paths": [
                         {
                             "path": "",
@@ -242,7 +237,7 @@
             "enabled": true,
             "gateway": "istio-system/istio-gateway",
             "hostname": "*",
-            "value": "/sit_acc",
+            "value": "/sit_account",
             "port": 80
         },
         "backendconfig": {
@@ -268,14 +263,14 @@
     "admin": {
         "replicaCount": 4,
         "app": {
-            "name": "my_sit_sit_admin_name"
+            "name": "my_sit_admin_name"
         },
         "Release": {
             "Maintainer": "mobilecapital",
             "name": "nostro-vostro"
         },
         "image": {
-            "image_name": "my_sit_sit_admin_image",
+            "image_name": "my_sit_admin_image",
             "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -285,13 +280,13 @@
                 "name": "regvostro"
             }
         ],
-        "nameOverride": "sit_sit_admin",
-        "fullnameOverride": "sit_sit_admin",
+        "nameOverride": "sit_admin",
+        "fullnameOverride": "sit_admin",
         "env": {
             "account_statement": [
                 {
                     "name": "MY_ID",
-                    "value": "sit_sit_admin"
+                    "value": "sit_admin"
                 },
                 {
                     "name": "INSTANCE_ID",
@@ -437,12 +432,8 @@
             "sidecar.istio.io/proxyMemory": "25Mi",
             "sidecar.istio.io/proxyMemoryLimit": "100Mi",
             "sidecar.istio.io/proxyCPULimit": "20m",
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-nostro-vostro"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            }
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}"
         },
         "volume": {
             "enabled": false
@@ -452,12 +443,8 @@
         },
         "securityContext": {},
         "serviceAnnotations": {
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-nostro-vostro"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            },
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}",
             "app.kubernetes.io/managed-by": "Helm",
             "meta.helm.sh/release-namespace": "env2"
         },
@@ -706,12 +693,8 @@
             "sidecar.istio.io/proxyMemory": "25Mi",
             "sidecar.istio.io/proxyMemoryLimit": "100Mi",
             "sidecar.istio.io/proxyCPULimit": "20m",
-            "cloud.google.com/backend-config": {
-                "env22": "http-myhc-sit_publisher"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            }
+            "cloud.google.com/backend-config": "{\"env22\": \"http-myhc-sit_publisher\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}"
         },
         "volume": {
             "enabled": false
@@ -721,12 +704,8 @@
         },
         "securityContext": {},
         "serviceAnnotations": {
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-sit_publisher"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            },
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-sit_publisher\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}",
             "app.kubernetes.io/managed-by": "Helm",
             "meta.helm.sh/release-namespace": "env2"
         },

@@ -16,7 +16,7 @@
             "name": "nostro-vostro"
         },
         "image": {
-            "image_name": "/1.0.0-b230",
+            "image_name": "my_image",
             "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -178,12 +178,8 @@
             "sidecar.istio.io/proxyMemory": "25Mi",
             "sidecar.istio.io/proxyMemoryLimit": "100Mi",
             "sidecar.istio.io/proxyCPULimit": "20m",
-            "cloud.google.com/backend-config": {
-                "env22": "http-myhc-nostro-vostro"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            }
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}"
         },
         "volume": {
             "enabled": false
@@ -193,12 +189,8 @@
         },
         "securityContext": {},
         "serviceAnnotations": {
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-nostro-vostro"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            },
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}",
             "app.kubernetes.io/managed-by": "Helm",
             "meta.helm.sh/release-namespace": "env2"
         },
@@ -285,7 +277,7 @@
             "name": "nostro-vostro"
         },
         "image": {
-            "image_name": "/1.0.0-b330",
+            "image_name": "my_admin_image",
             "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -447,12 +439,8 @@
             "sidecar.istio.io/proxyMemory": "25Mi",
             "sidecar.istio.io/proxyMemoryLimit": "100Mi",
             "sidecar.istio.io/proxyCPULimit": "20m",
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-nostro-vostro"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            }
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}"
         },
         "volume": {
             "enabled": false
@@ -462,12 +450,8 @@
         },
         "securityContext": {},
         "serviceAnnotations": {
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-nostro-vostro"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            },
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}",
             "app.kubernetes.io/managed-by": "Helm",
             "meta.helm.sh/release-namespace": "env2"
         },
@@ -554,7 +538,7 @@
             "name": "publisher"
         },
         "image": {
-            "image_name": "/1.0.1-b230",
+            "image_name": "my_image",
             "repository": "myrepo.yourrepo.com/mobilecapital/publisher",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -716,12 +700,8 @@
             "sidecar.istio.io/proxyMemory": "25Mi",
             "sidecar.istio.io/proxyMemoryLimit": "100Mi",
             "sidecar.istio.io/proxyCPULimit": "20m",
-            "cloud.google.com/backend-config": {
-                "env22": "http-myhc-publisher"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            }
+            "cloud.google.com/backend-config": "{\"env22\": \"http-myhc-publisher\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}"
         },
         "volume": {
             "enabled": false
@@ -731,12 +711,8 @@
         },
         "securityContext": {},
         "serviceAnnotations": {
-            "cloud.google.com/backend-config": {
-                "env2": "http-myhc-publisher"
-            },
-            "cloud.google.com/neg": {
-                "ingress": true
-            },
+            "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-publisher\"}",
+            "cloud.google.com/neg": "{\"ingress\": true}",
             "app.kubernetes.io/managed-by": "Helm",
             "meta.helm.sh/release-namespace": "env2"
         },
