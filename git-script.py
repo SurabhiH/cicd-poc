@@ -24,8 +24,7 @@ def clone_repo(github_url, branch_name, target_folder):
         print(f"Error cloning the repository: {e}")
 
 
-    json_path = None
-    
+def fetch_json(target_folder):
     for root, folders, files in os.walk(target_folder):
         if "dev-values" in folders:  # Check if 'dev-values' is in the list of folders
             dev_values_path = os.path.join(root, "dev-values")  # Full path to 'dev-values'
@@ -36,9 +35,9 @@ def clone_repo(github_url, branch_name, target_folder):
         
         if json_path:  # If the JSON file is found, exit the loop
             break
-    
-    print(json_path)
+
     return json_path
+
 
 
 def yaml_to_json(folder_path):
@@ -132,8 +131,6 @@ def write_changes_to_excel(changes, excel_file_path, envs):
     wb.save(excel_file_path)
 
 
-
-
 def get_input(prompt):
     attempts = 3
     for _ in range(attempts):
@@ -146,20 +143,26 @@ def get_input(prompt):
 
 def main():
     folder_path = get_input("Enter the path of the folder containing YAML files: ")
-    new_json_path = get_input("Enter the path to save the new JSON file: ")
     csv_file_path = get_input("Enter the path to save the changes CSV file: ")
     excel_file_path = get_input("Enter the path to save the Excel file: ")
     github_url = get_input("Add the Repository URL: ")
-    branch_name = get_input("Add the desired branch name : ") 
-    target_folder = get_input("Add the folder where the repo has to be cloned : ")   # Replace with your target folder path
-    #previous_json_path = get_input("Enter the path of the JSON file from previous state: ")
-
+    promote_branch_x-1 = get_input("Add the previous branch name : ") 
+    promote_branch_x = get_input("Add the current branch name : ") 
+    target_folder_x-1 = get_input("Add the folder where the x-1 repo has to be cloned : ")  
+    target_folder_x = get_input("Add the folder where the x repo has to be cloned : ") 
 
     # Environment list (for this example, you can modify based on your use case)
     envs = ['dev', 'sit', 'uat']  # Example environments
 
-    previous_json_path = clone_repo(github_url, branch_name, target_folder)
+    clone_repo(github_url, promote_branch_x-1, target_folder_x-1)
+
+    previous_json_path = fetch_json(target_folder_x-1)
     print(previous_json_path)
+
+    clone_repo(github_url, promote_branch_x, target_folder_x)
+
+    new_json_path = fetch_json(target_folder_x)
+    print(new_json_path)
 
     # Load previous JSON data
     try:
