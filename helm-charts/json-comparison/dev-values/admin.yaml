@@ -23,8 +23,6 @@ nameOverride: "admin"
 fullnameOverride: "admin"
 env:
   account_statement:
-  - name: MY_ID
-    value: "admin"
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER
@@ -36,9 +34,9 @@ env:
   - name: NOTI_XYZ
     value: "http://env1.random.org/path/ENV1"
   - name: HOST_1
-    value: "1.1.1.1"
+    value: 1.1.1.1
   - name: PORT_1
-    value: "3000"
+    value: 3000
   - name: HOST_2
     value: "2.2.2.2"
   - name: PORT_2
