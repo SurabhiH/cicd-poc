@@ -1,7 +1,6 @@
 import os
 import yaml
 import json
-import git
 
 # Function to create YAML files with proper formatting
 def create_yaml_files_from_json(json_file_path, output_folder):
@@ -45,44 +44,19 @@ def process_json_data(data):
         # If data is something else, return it as a string
         return f'"{data}"'
 
-# Function to push changes to another GitHub branch
-def push_to_git_branch(repo_path, branch_name, commit_message):
-    # Initialize the repository
-    repo = git.Repo(repo_path)
-
-    # Check out to the branch or create a new branch
-    if branch_name in repo.heads:
-        repo.git.checkout(branch_name)
-    else:
-        repo.git.checkout('-b', branch_name)
-
-    # Add files to the staging area
-    repo.git.add(all=True)
-
-    # Commit changes
-    repo.index.commit(commit_message)
-
-    # Push to the remote repository
-    repo.git.push('--set-upstream', 'origin', branch_name)
-
 # Main function to take input paths and create YAML files
 def main():
     # Input JSON file path
-    json_file_path = input("Enter the path of the JSON file: ").strip()
+    json_file_path = input("Enter the path of the JSON file: ")
+    #json_file_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\sit-values copy\config-sit2.json'
     
     # Output folder path to store YAML files
-    output_folder = input("Enter the path of the folder to save the YAML files: ").strip()
-
-    # Repository path and branch details
-    repo_path = input("Enter the local path of the Git repository: ").strip()
-    branch_name = input("Enter the name of the branch to push the changes to: ").strip()
-    commit_message = input("Enter the commit message: ").strip()
+    output_folder = input("Enter the path of the folder to save the YAML files: ")
+    #output_folder = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\json-comparison\sit-values copy'
 
     # Create YAML files from the JSON file
     create_yaml_files_from_json(json_file_path, output_folder)
 
-    # Push changes to GitHub branch
-    push_to_git_branch(repo_path, branch_name, commit_message)
 
 if __name__ == "__main__":
     main()

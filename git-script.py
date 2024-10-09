@@ -179,8 +179,6 @@ def main():
     with open(new_json_path, 'w') as new_json_file:
         json.dump(json_data, new_json_file, indent=4)
 
-
-
     # Compare JSON files
     changes = compare_json_files(old_data, json_data)
 
