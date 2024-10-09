@@ -33,7 +33,7 @@ env:
   - name: MY_ID
     value: 1000
   - name: INSTANCE_ID
-    value: "1111"
+    value: 0.0.0.0
   - name: MY_SENDER
     value: "Client"
   - name: NOTI_SENDER
@@ -98,7 +98,7 @@ env:
 containerPort: 8080
 
 data:
-  enabled: true
+  enabled: false
 
 serviceAccount:
   create: false
