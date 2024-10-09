@@ -31,7 +31,7 @@ fullnameOverride: "nostro-vostro"
 env:
   account_statement:
   - name: MY_ID
-    value: "nostro-vostro"
+    value: "nostro-vostro-new"
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER

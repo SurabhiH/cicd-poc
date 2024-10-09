@@ -49,9 +49,17 @@ def compare(old, new, root, changes, path=''):
                 changes.append((root, 'add', new_key_path, json.dumps(new[key], indent=4), 'Added'))
 
     elif isinstance(old, list):
-        for item in old:
-            if item not in new:
-                changes.append((root, 'delete', path, json.dumps(item, indent=4), 'Deleted'))
+        # Check for modifications and deletions
+        for i, old_item in enumerate(old):
+            if i < len(new):
+                if old_item != new[i]:
+                    changes.append((root, 'modify', path, json.dumps(new[i], indent=4), 'Modified'))
+            else:
+                changes.append((root, 'delete', path, json.dumps(old_item, indent=4), 'Deleted'))
+
+        # Check for additions
+        for i in range(len(old), len(new)):
+            changes.append((root, 'add', path, json.dumps(new[i], indent=4), 'Added'))
 
     else:
         if old != new:
