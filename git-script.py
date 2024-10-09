@@ -5,6 +5,7 @@ import csv
 import yaml
 from openpyxl import Workbook
 
+
 def clone_repo(github_url, branch_name, target_folder):
     json_path = ''
     # Check if the target folder already exists
@@ -32,7 +33,6 @@ def fetch_json(target_folder):
                 if filename == "config-dev.json":  # Look for 'config-dev.json'
                     json_path = os.path.join(dev_values_path, filename)
                     break  # Exit after finding the file
-        
         if json_path:  # If the JSON file is found, exit the loop
             break
 
@@ -93,14 +93,6 @@ def compare(old, new, root, changes, path=''):
         if old != new:
             changes.append((root, 'modify', path, json.dumps(new, indent=4), 'Modified'))
 
-def write_changes_to_csv(changes, csv_file_path):
-    with open(csv_file_path, 'w', newline='') as csvfile:
-        csv_writer = csv.writer(csvfile)
-        csv_writer.writerow(['Service name', 'Change Request', 'Key', 'Value', 'Comment'])
-
-        for change in changes:
-            service_name, change_type, key, value, comment = change
-            csv_writer.writerow([service_name, change_type, key, value, comment])
 
 def write_changes_to_excel(changes, excel_file_path, envs):
     # Create a new workbook and add sheets
@@ -142,8 +134,6 @@ def get_input(prompt):
     exit(1)
 
 def main():
-    folder_path = get_input("Enter the path of the folder containing YAML files: ")
-    csv_file_path = get_input("Enter the path to save the changes CSV file: ")
     excel_file_path = get_input("Enter the path to save the Excel file: ")
     github_url = get_input("Add the Repository URL: ")
     promote_branch_x-1 = get_input("Add the previous branch name : ") 
@@ -173,7 +163,8 @@ def main():
         old_data = {}
 
     # Convert YAML to JSON
-    json_data = yaml_to_json(folder_path)
+    dev_values_path = os.path.dirname(new_json_path)
+    json_data = yaml_to_json(dev_values_path)
 
     # Save the new JSON data
     with open(new_json_path, 'w') as new_json_file:
@@ -182,8 +173,6 @@ def main():
     # Compare JSON files
     changes = compare_json_files(old_data, json_data)
 
-    # Write changes to CSV
-    write_changes_to_csv(changes, csv_file_path)
 
     # Write changes to Excel with multiple sheets
     write_changes_to_excel(changes, excel_file_path, envs)
