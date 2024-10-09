@@ -1,0 +1,152 @@
+Service name,Change Request,Key,Value,Comment
+account,modify,replicaCount,10,Modified
+account,modify,app/name,"""nostro-vostro-copy""",Modified
+account,delete,app/id,5,Deleted
+account,add,Release/name,"""nostro-vostro-copy-again""",Added
+account,modify,image/image_name,"""1.0.0-b23456""",Modified
+account,delete,imagePullSecrets,"{
+    ""name"": ""regvostro""
+}",Deleted
+account,add,test1,"{
+    ""test2"": {
+        ""name"": ""test value"",
+        ""id"": 1001,
+        ""code"": ""red""
+    }
+}",Added
+actualyaml,add,,"{
+    ""replicaCount"": 1,
+    ""app"": {
+        ""name"": ""nostro-vostro""
+    },
+    ""Release"": {
+        ""Maintainer"": ""mobilecapital"",
+        ""name"": ""nostro-vostro""
+    },
+    ""image"": {
+        ""image_name"": ""mbrw_image"",
+        ""repository"": ""myrepo.yourrepo.com/mobilecapital/nostro-vostro"",
+        ""pullPolicy"": ""Always"",
+        ""tag"": ""0.0.4""
+    },
+    ""imagePullSecrets"": [
+        {
+            ""name"": ""regvostro""
+        }
+    ],
+    ""nameOverride"": ""nostro-vostro"",
+    ""fullnameOverride"": ""nostro-vostro"",
+    ""env"": {
+        ""account_statement"": [
+            {
+                ""name"": ""MY_ID"",
+                ""value"": ""nostro-vostro""
+            }
+        ]
+    },
+    ""containerPort"": 8080,
+    ""data"": {
+        ""enabled"": true
+    },
+    ""serviceAccount"": {
+        ""create"": false,
+        ""annotations"": {},
+        ""name"": """"
+    },
+    ""k8s_serviceaccount"": {
+        ""enabled"": true,
+        ""k8s_serviceAccountName"": ""kube-svc""
+    },
+    ""podAnnotations"": {
+        ""sidecar.istio.io/proxyCPU"": ""50m"",
+        ""sidecar.istio.io/proxyMemory"": ""25Mi"",
+        ""sidecar.istio.io/proxyMemoryLimit"": ""100Mi"",
+        ""sidecar.istio.io/proxyCPULimit"": ""20m"",
+        ""cloud.google.com/backend-config"": ""{\""env22\"": \""http-myhc-nostro-vostro\""}"",
+        ""cloud.google.com/neg"": ""{\""ingress\"": true}""
+    },
+    ""volume"": {
+        ""enabled"": false
+    },
+    ""secrets"": {
+        ""enabled"": false
+    },
+    ""securityContext"": {},
+    ""serviceAnnotations"": {
+        ""cloud.google.com/backend-config"": ""{\""env2\"": \""http-myhc-nostro-vostro\""}"",
+        ""cloud.google.com/neg"": ""{\""ingress\"": true}"",
+        ""app.kubernetes.io/managed-by"": ""Helm"",
+        ""meta.helm.sh/release-namespace"": ""env2""
+    },
+    ""service"": {
+        ""name"": ""nostro-vostro"",
+        ""type"": ""ClusterIP"",
+        ""port"": 80,
+        ""targetPort"": 8080
+    },
+    ""ingress"": {
+        ""enabled"": true,
+        ""className"": """",
+        ""annotations"": {
+            ""cloud.google.com/backend-config"": {
+                ""env2"": ""http-myhc-nostro-vostro""
+            },
+            ""cloud.google.com/neg"": {
+                ""ingress"": true
+            }
+        },
+        ""hosts"": [
+            {
+                ""host"": ""nostro-vostro"",
+                ""paths"": [
+                    {
+                        ""path"": ""/nostro-vostro"",
+                        ""pathType"": ""ImplementationSpecific""
+                    }
+                ]
+            }
+        ],
+        ""tls"": []
+    },
+    ""resources"": null,
+    ""limits"": {
+        ""memory"": ""52Mi"",
+        ""cpu"": ""50m""
+    },
+    ""requests"": {
+        ""memory"": ""18Mi"",
+        ""cpu"": ""23m""
+    },
+    ""autoscaling"": {
+        ""enabled"": false,
+        ""minReplicas"": 5,
+        ""maxReplicas"": 110,
+        ""targetCPUUtilizationPercentage"": 70
+    },
+    ""vsconfig"": {
+        ""enabled"": true,
+        ""gateway"": ""istio-system/istio-gateway"",
+        ""hostname"": ""*"",
+        ""value"": ""/nostro-vostro"",
+        ""port"": 80
+    },
+    ""backendconfig"": {
+        ""enabled"": true,
+        ""namespace"": ""env2"",
+        ""timeoutSec"": 20,
+        ""healthCheck"": {
+            ""requestPath"": ""/healthy"",
+            ""port"": 8080,
+            ""type"": ""HTTP""
+        },
+        ""securityPolicy"": {
+            ""name"": ""fog-fw-policy""
+        }
+    },
+    ""pdb"": {
+        ""minAvailable"": 0
+    },
+    ""nodeSelector"": {},
+    ""tolerations"": [],
+    ""affinity"": {}
+}",Root object added
