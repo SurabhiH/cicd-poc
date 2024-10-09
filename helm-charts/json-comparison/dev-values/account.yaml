@@ -6,7 +6,7 @@
 replicaCount: 100
 
 app:
-  name: "nostro-vostro-new"
+  name: "nostro-vostro-1000"
 
 test1:
   test2:
@@ -31,7 +31,7 @@ fullnameOverride: "nostro-vostro-new"
 env:
   account_statement:
   - name: MY_ID
-    value: "nostro-vostro-new"
+    value: "1000"
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER
