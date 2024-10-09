@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 4
+replicaCount: 400
 
 app:
   name: "my_admin_name"
@@ -24,7 +24,7 @@ fullnameOverride: "admin"
 env:
   account_statement:
   - name: MY_ID
-    value: "admin"
+    value: 1001
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER
