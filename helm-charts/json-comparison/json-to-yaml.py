@@ -3,13 +3,12 @@ import yaml
 import json
 
 # Function to create YAML files with proper formatting
-def create_yaml_files_from_json(json_file_path):
+def create_yaml_files_from_json(json_file_path, output_folder):
     # Load the updated JSON file
     with open(json_file_path, 'r') as json_file:
         json_data = json.load(json_file)
 
-    # Create the 'updated-yaml-files' folder if it doesn't exist
-    output_folder = 'updated-yaml-files'
+    # Check if the output folder exists, if not, create it
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
@@ -45,8 +44,13 @@ def process_json_data(data):
         # If data is something else, return it as a string
         return f'"{data}"'
 
-# Path to the updated JSON file
-json_file_path = r'C:\Users\Surabhi\Desktop\Automation\CICD_Testing\cicd-poc\helm-charts\yaml-templates\sit-template\config-sit.json'
-
-# Create YAML files from the JSON file
-create_yaml_files_from_json(json_file_path)
+# Main function to take input paths and create YAML files
+if __name__ == "__main__":
+    # Input JSON file path
+    json_file_path = input("Enter the path of the JSON file: ")
+    
+    # Output folder path to store YAML files
+    output_folder = input("Enter the path of the folder to save the YAML files: ")
+    
+    # Create YAML files from the JSON file
+    create_yaml_files_from_json(json_file_path, output_folder)
