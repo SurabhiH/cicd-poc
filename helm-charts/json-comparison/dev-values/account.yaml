@@ -148,7 +148,7 @@ ingress:
   hosts:
   - host: nostro-vostro
     paths:
-    - path: ""
+    - path: "/healthy"
       pathType: ""
   tls: []
 
