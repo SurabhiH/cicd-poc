@@ -55,13 +55,13 @@ def compare_json_files(old_data, new_data):
     # Check for changes in the JSON files
     for root in new_data.keys():
         if root not in old_data:
-            changes.append((root, 'add', root, json.dumps(new_data[root], indent=4), 'Root object added'))
+            changes.append((root, 'add', '', json.dumps(new_data[root], indent=4), 'root object added'))
         else:
             compare(old_data[root], new_data[root], root, changes)
  
     for root in old_data.keys():
         if root not in new_data:
-            changes.append((root, 'delete', root, json.dumps(old_data[root], indent=4), 'Root object deleted'))
+            changes.append((root, 'delete', '', json.dumps(old_data[root], indent=4), 'root object deleted'))
  
     return changes
  
