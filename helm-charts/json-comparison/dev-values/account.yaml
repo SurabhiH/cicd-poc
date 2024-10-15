@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 
-replicaCount: 1
+replicaCount: 100
 
 app:
   name: "nostro-vostro"
@@ -20,20 +20,22 @@ Release:
 
 image:
   image_name: "my_image"
-  repository: "myrepo.yourrepo.com/mobilecapital/nostro-vostro"
+  repository: "myrepo.yourrepo.com/mobilecapital/nostro-vostro-new"
   pullPolicy: "Always"
   tag: "0.0.4"
 
 imagePullSecrets:
 - name: "regvostro"
-nameOverride: "nostro-vostro"
-fullnameOverride: "nostro-vostro"
+nameOverride: "nostro-vostro-new"
+fullnameOverride: "nostro-vostro-new"
 env:
   account_statement:
   - name: MY_ID
-    value: "nostro-vostro"
+    value: 1000
+  - name: deleted_key
+    value: deleted_value
   - name: INSTANCE_ID
-    value: "1111"
+    value: 0.0.0.0
   - name: MY_SENDER
     value: "Client"
   - name: NOTI_SENDER
@@ -98,7 +100,7 @@ env:
 containerPort: 8080
 
 data:
-  enabled: true
+  enabled: false
 
 serviceAccount:
   create: false
@@ -114,7 +116,7 @@ podAnnotations:
   sidecar.istio.io/proxyMemory: "25Mi"
   sidecar.istio.io/proxyMemoryLimit: "100Mi"
   sidecar.istio.io/proxyCPULimit: "20m"
-  cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro"}'
+  cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro-new"}'
   cloud.google.com/neg: '{"ingress": true}'
 
 volume:
@@ -126,13 +128,13 @@ secrets:
 securityContext: {}
 
 serviceAnnotations:
-  cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro"}'
+  cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro-new"}'
   cloud.google.com/neg: '{"ingress": true}'
   app.kubernetes.io/managed-by: "Helm"
   meta.helm.sh/release-namespace: "env2"
 
 service:
-  name: nostro-vostro
+  name: nostro-vostro-new
   type: ClusterIP
   port: 80
   targetPort: 8080
@@ -141,14 +143,12 @@ ingress:
   enabled: true
   className: ""
   annotations:
-    cloud.google.com/backend-config:
-      env2: http-myhc-nostro-vostro
-    cloud.google.com/neg:
-      ingress: true
+    cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro-new"}'
+    cloud.google.com/neg: '{"ingress": true}'
   hosts:
-  - host: nostro-vostro
+  - host: nostro-vostro-1
     paths:
-    - path: ""
+    - path: "/healthy"
       pathType: ""
   tls: []
 
@@ -170,7 +170,7 @@ vsconfig:
   enabled: true
   gateway: "istio-system/istio-gateway"
   hostname: "*"
-  value: "/nostro-vostro"
+  value: "/nostro-vostro-new"
   port: 80
 
 backendconfig:
@@ -192,4 +192,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
