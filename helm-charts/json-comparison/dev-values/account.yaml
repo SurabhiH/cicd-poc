@@ -30,8 +30,12 @@ nameOverride: "nostro-vostro-new"
 fullnameOverride: "nostro-vostro-new"
 env:
   account_statement:
+  env:
+  account_statement:
   - name: MY_ID
-    value: 101
+    value: 1000
+  - name: My_NEW_VALUE
+    value: 007
   - name: INSTANCE_ID
     value: 0.0.0.0
   - name: MY_SENDER
@@ -94,7 +98,6 @@ env:
     value: "10"
   - name: RATE_WINDOW
     value: "2"
-
 containerPort: 8080
 
 data:
