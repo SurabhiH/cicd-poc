@@ -6,6 +6,7 @@ replicaCount: 400
 
 app:
   name: "my_admin_name"
+  id: 007
 
 Release:
   Maintainer: "mobilecapital"
