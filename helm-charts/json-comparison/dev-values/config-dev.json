@@ -4,6 +4,13 @@
         "app": {
             "name": "nostro-vostro-1000"
         },
+        "test1": {
+            "test2": {
+                "name": "test value",
+                "id": "1001",
+                "code": "red"
+            }
+        },
         "Release": {
             "Maintainer": "mobilecapital",
             "name": "nostro-vostro-new"
@@ -200,15 +207,17 @@
                 "cloud.google.com/backend-config": "{\"env2\": \"http-myhc-nostro-vostro-new\"}",
                 "cloud.google.com/neg": "{\"ingress\": true}"
             },
-            "hosts": {
-                "host": "nostro-vostro-1",
-                "paths": [
-                    {
-                        "path": "/healthy",
-                        "pathType": ""
-                    }
-                ]
-            },
+            "hosts": [
+                {
+                    "host": "nostro-vostro-1",
+                    "paths": [
+                        {
+                            "path": "/healthy",
+                            "pathType": ""
+                        }
+                    ]
+                }
+            ],
             "tls": []
         },
         "resources": {
@@ -252,26 +261,19 @@
         },
         "nodeSelector": {},
         "tolerations": [],
-        "affinity": {},
-        "test1": {
-            "test2": {
-                "name": "test value",
-                "id": "1001",
-                "code": "red"
-            }
-        }
+        "affinity": {}
     },
     "admin": {
         "replicaCount": 400,
         "app": {
-            "name": "my_sit_admin_name"
+            "name": "my_admin_name"
         },
         "Release": {
             "Maintainer": "mobilecapital",
             "name": "nostro-vostro"
         },
         "image": {
-            "image_name": "my_sit_admin_image",
+            "image_name": "my_admin_image",
             "repository": "myrepo.yourrepo.com/mobilecapital/nostro-vostro",
             "pullPolicy": "Always",
             "tag": "0.0.4"
@@ -281,8 +283,8 @@
                 "name": "regvostro"
             }
         ],
-        "nameOverride": "sit_admin",
-        "fullnameOverride": "sit_admin",
+        "nameOverride": "admin",
+        "fullnameOverride": "admin",
         "env": {
             "account_statement": [
                 {
@@ -460,7 +462,7 @@
             "className": "",
             "annotations": {
                 "cloud.google.com/backend-config": {
-                    "env2": "http-myhc-sit_admin"
+                    "env2": "http-myhc-admin"
                 },
                 "cloud.google.com/neg": {
                     "ingress": true
