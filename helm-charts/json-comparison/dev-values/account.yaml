@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 
-replicaCount: 100
+replicaCount: 10
 
 app:
   name: "nostro-vostro-1000"
@@ -29,8 +29,6 @@ imagePullSecrets:
 nameOverride: "nostro-vostro-new"
 fullnameOverride: "nostro-vostro-new"
 env:
-  account_statement:
-  env:
   account_statement:
   - name: MY_ID
     value: 1000
@@ -148,11 +146,11 @@ ingress:
     cloud.google.com/backend-config: '{"env2": "http-myhc-nostro-vostro-new"}'
     cloud.google.com/neg: '{"ingress": true}'
   hosts:
-  - host: nostro-vostro-1
+  - host: nostro-vostro-100
     paths:
     - path: "/healthy"
       pathType: ""
-      URL: deleted
+  - id: new-ID
   tls: []
 
 resources:
@@ -195,4 +193,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
