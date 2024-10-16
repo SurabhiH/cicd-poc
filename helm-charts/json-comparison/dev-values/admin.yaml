@@ -91,7 +91,7 @@ env:
 containerPort: 8080
 
 data:
-  enabled: true
+  enabled: false
 
 serviceAccount:
   create: false
