@@ -1,7 +1,5 @@
   - name: MY_ID
     value: 1000
-  - name: INSTANCE_ID
-    value: 0.0.0.0
   - name: MY_SENDER
     value: "Client"
   - name: NOTI_SENDER
