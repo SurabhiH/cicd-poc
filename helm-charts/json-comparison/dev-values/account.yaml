@@ -30,70 +30,70 @@ nameOverride: "nostro-vostro-new"
 fullnameOverride: "nostro-vostro-new"
 env:
   account_statement:
-    - name: MY_ID
-      value: 101
-    - name: INSTANCE_ID
-      value: 0.0.0.0
-    - name: MY_SENDER
-      value: "Client"
-    - name: NOTI_SENDER
-      value: "MySender"
-    - name: URL_TLS_HOSTS
-      value: "myserver-sit.xyz.com"
-    - name: NOTI_XYZ
-      value: "http://env1.random.org/path/ENV1"
-    - name: HOST_1
-      value: "1.1.1.1"
-    - name: PORT_1
-      value: "3000"
-    - name: HOST_2
-      value: "2.2.2.2"
-    - name: PORT_2
-      value: "3000"
-    - name: HOST_3
-      value: "3.3.3.3"
-    - name: PORT_3
-      value: "3000"
-    - name: HOST_4
-      value: "4.4.4.4"
-    - name: PORT_4
-      value: "3000"
-    - name: HOST_4
-      value: "5.5.5.5"
-    - name: PORT_5
-      value: "3000"
-    - name: CASH_NAMESAPCE
-      value: "myenv1-chanel"
-    - name: TLS_HOSTS
-      value: "1.1.1.1:4333,2.2.2.2:4333,3.3.3.3:4333,4.4.4.4:4333,5.5.5.5:4333,6.6.6.6:4333,7.7.7.7:4333"
-    - name: SERVER_CA
-      value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-    - name: SERVER_KEY
-      value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-    - name: SESSION_TOKEN_KEY
-      value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-    - name: ENCRYPTION_KEY_TEMP
-      value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-    - name: OAUTH_CLIENT_SECRET
-      value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-    - name: JWT_SECRET_TOKEN
-      value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
-    - name: API_ENDPOINT_USER_DATA
-      value: "http://api.example.com/users/12345"
-    - name: WEBHOOK_SECRET
-      value: "https://webhooks.example.com/receive"
-    - name: IMAGE_STORAGE_URL
-      value: "http://images.example.com/uploads/profile.jpg"
-    - name: QUEUE_SIZE
-      value: "10"
-    - name: MIN_CONNEC
-      value: "1"
-    - name: OPEN_THRESHOLD
-      value: "1"
-    - name: ERROR_RATE
-      value: "10"
-    - name: RATE_WINDOW
-      value: "2"
+  - name: MY_ID
+    value: 101
+  - name: INSTANCE_ID
+    value: 0.0.0.0
+  - name: MY_SENDER
+    value: "Client"
+  - name: NOTI_SENDER
+    value: "MySender"
+  - name: URL_TLS_HOSTS
+    value: "myserver-sit.xyz.com"
+  - name: NOTI_XYZ
+    value: "http://env1.random.org/path/ENV1"
+  - name: HOST_1
+    value: "1.1.1.1"
+  - name: PORT_1
+    value: "3000"
+  - name: HOST_2
+    value: "2.2.2.2"
+  - name: PORT_2
+    value: "3000"
+  - name: HOST_3
+    value: "3.3.3.3"
+  - name: PORT_3
+    value: "3000"
+  - name: HOST_4
+    value: "4.4.4.4"
+  - name: PORT_4
+    value: "3000"
+  - name: HOST_4
+    value: "5.5.5.5"
+  - name: PORT_5
+    value: "3000"
+  - name: CASH_NAMESAPCE
+    value: "myenv1-chanel"
+  - name: TLS_HOSTS
+    value: "1.1.1.1:4333,2.2.2.2:4333,3.3.3.3:4333,4.4.4.4:4333,5.5.5.5:4333,6.6.6.6:4333,7.7.7.7:4333"
+  - name: SERVER_CA
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+  - name: SERVER_KEY
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+  - name: SESSION_TOKEN_KEY
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+  - name: ENCRYPTION_KEY_TEMP
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+  - name: OAUTH_CLIENT_SECRET
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+  - name: JWT_SECRET_TOKEN
+    value: "projects/1111111111/secrets/CH_DB_CERT_ENV1/versions/latest"
+  - name: API_ENDPOINT_USER_DATA
+    value: "http://api.example.com/users/12345"
+  - name: WEBHOOK_SECRET
+    value: "https://webhooks.example.com/receive"
+  - name: IMAGE_STORAGE_URL
+    value: "http://images.example.com/uploads/profile.jpg"
+  - name: QUEUE_SIZE
+    value: "10"
+  - name: MIN_CONNEC
+    value: "1"
+  - name: OPEN_THRESHOLD
+    value: "1"
+  - name: ERROR_RATE
+    value: "10"
+  - name: RATE_WINDOW
+    value: "2"
 
 containerPort: 8080
 
