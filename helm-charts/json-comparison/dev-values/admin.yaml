@@ -24,7 +24,7 @@ fullnameOverride: "admin"
 env:
   account_statement:
   - name: MY_ID
-    value: 1001
+    value: 1002
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER
