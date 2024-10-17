@@ -25,16 +25,21 @@ def clone_repo(github_url, branch_name, target_folder):
 def fetch_json(target_folder):
     json_path = ''
     for root, folders, files in os.walk(target_folder):
-        if "dev-values" in folders:  # Check if 'dev-values' is in the list of folders
-            dev_values_path = os.path.join(root, "dev-values")  # Full path to 'dev-values'
-            for filename in os.listdir(dev_values_path):  # List files in 'dev-values'
-                if filename == "config-dev.json":  # Look for 'config-dev.json'
+        if "dev-values" in folders:
+            dev_values_path = os.path.join(root, "dev-values")
+            for filename in os.listdir(dev_values_path):
+                if filename == "config-dev.json":
                     json_path = os.path.join(dev_values_path, filename)
-                    break  # Exit after finding the file
-        if json_path:  # If the JSON file is found, exit the loop
-            break
- 
+                    break
+            if not json_path:
+                # Create an empty config-dev.json if it doesn't exist
+                json_path = os.path.join(dev_values_path, "config-dev.json")
+                with open(json_path, 'w') as f:
+                    json.dump({}, f)  # Create an empty JSON object
+            break  # Exit after processing the 'dev-values' folder
+
     return json_path
+
  
 def yaml_to_json(folder_path):
     json_data = {}
@@ -61,41 +66,61 @@ def compare_json_files(old_data, new_data):
  
     for root in old_data.keys():
         if root not in new_data:
-            changes.append((root, 'delete', '', json.dumps(old_data[root], indent=4), 'root object deleted'))
+            changes.append((root, 'delete', root, json.dumps(old_data[root], indent=4), 'root object deleted'))
  
     return changes
  
-def compare(old, new, root, changes, path=''):
+
+def compare(old, new, root, changes, path='', key='name'):
     if isinstance(old, dict):
-        for key in old.keys():
-            new_key_path = f"{path}/{key}" if path else key
-            if key in new:
-                compare(old[key], new[key], root, changes, new_key_path)
+        for k in old.keys():
+            new_key_path = f"{path}//{k}" if path else k
+            if k in new:
+                compare(old[k], new[k], root, changes, new_key_path, key)
             else:
-                changes.append((root, 'delete', new_key_path, json.dumps(old[key], indent=4), 'Deleted'))
- 
-        for key in new.keys():
-            new_key_path = f"{path}/{key}" if path else key
-            if key not in old:
-                changes.append((root, 'add', new_key_path, json.dumps(new[key], indent=4), 'Added'))
- 
+                changes.append((root, 'delete', new_key_path, json.dumps(old[k], indent=4), 'Deleted'))
+
+        for k in new.keys():
+            new_key_path = f"{path}//{k}" if path else k
+            if k not in old:
+                changes.append((root, 'add', new_key_path, json.dumps(new[k], indent=4), 'Added'))
+
+    elif isinstance(old, list) and all(isinstance(i, dict) for i in old):
+        # Handle lists of dictionaries
+        old_dict = {item.get(key): item for item in old if key in item}
+        new_dict = {item.get(key): item for item in new if key in item}
+
+        # Check for modifications, deletions, and additions
+        for old_key, old_item in old_dict.items():
+            if old_key in new_dict:
+                new_item = new_dict[old_key]
+                if old_item != new_item:
+                    changes.append((root, 'modify', f"{path}//{old_key}", json.dumps(new_item, indent=4), 'Modified'))
+            else:
+                changes.append((root, 'delete', path, json.dumps(old_item, indent=4), 'Deleted'))
+
+        for new_key, new_item in new_dict.items():
+            if new_key not in old_dict:
+                changes.append((root, 'add', path, json.dumps(new_item, indent=4), 'Added'))
+
     elif isinstance(old, list):
-        # Check for modifications and deletions
+        # Handle non-dictionary lists
         for i, old_item in enumerate(old):
             if i < len(new):
                 if old_item != new[i]:
-                    changes.append((root, 'modify', path, json.dumps(new[i], indent=4), 'Modified List'))
+                    changes.append((root, 'modify', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Modified'))
             else:
-                changes.append((root, 'delete', path, json.dumps(old_item, indent=4), 'Deleted'))
- 
-        # Check for additions
+                changes.append((root, 'delete', f"{path}[{i}]", json.dumps(old_item, indent=4), 'Deleted'))
+
         for i in range(len(old), len(new)):
-            changes.append((root, 'add', path, json.dumps(new[i], indent=4), 'Added'))
- 
+            changes.append((root, 'add', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Added'))
+
     else:
+        # Compare scalar values
         if old != new:
             changes.append((root, 'modify', path, json.dumps(new, indent=4), 'Modified'))
- 
+
+
 def find_excel_file(folder_path):
     for root, _, files in os.walk(folder_path):
         for file in files:
