@@ -26,7 +26,7 @@ env:
   - name: MY_ID
     value: 1002
   - name: MY_NEW_ID
-    value: 007
+    value: "007"
   - name: INSTANCE_ID
     value: "1111"
   - name: MY_SENDER
