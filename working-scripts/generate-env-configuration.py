@@ -20,11 +20,12 @@ def try_parse_json(value):
     except (json.JSONDecodeError, TypeError):
         return value
 
+
+
 def apply_changes_to_json(json_data, excel_file_path, sheet_name):
     df = pd.read_excel(excel_file_path, sheet_name=sheet_name)
 
     for index, row in df.iterrows():
-
         service_name = row['Service name']
         change_request = row['Change Request']
         key = row['Key']
@@ -51,7 +52,11 @@ def apply_changes_to_json(json_data, excel_file_path, sheet_name):
                 print(f"Error: Key is missing or empty in row {index + 1}.")
                 raise ValueError(f"Missing or empty key encountered in row {index + 1}.")
 
-        key_path = key.split('/')
+        key_path = key.split('//')
+
+        if change_request == 'delete' and (pd.isna(value) or value == ""):
+            print(f"Value is empty for delete operation in row {index + 1} for key '{key}'. Skipping...")
+            continue  # Skip processing for deletes with empty value
 
         if pd.isna(value) or value == "":
             print(f"Error: Value for key '{key}' in row {index + 1} is empty.")
@@ -61,40 +66,111 @@ def apply_changes_to_json(json_data, excel_file_path, sheet_name):
 
         if service_name in json_data:
             obj = json_data[service_name]
-            for key in key_path[:-1]:
-                if key not in obj:
-                    obj[key] = {}
-                obj = obj[key]
+            for k in key_path[:-1]:
+                if k not in obj:
+                    obj[k] = {}
+                obj = obj[k]
 
             final_key = key_path[-1]
-            if key_path[0] == "env":
-                if change_request == 'add':
-                    obj[final_key].append(parsed_value)
-                elif change_request == 'modify':
-                    for entry in obj[final_key]:
-                        if entry['name'] == parsed_value['name']:
-                            entry['value'] = parsed_value['value']
-                elif change_request == 'delete':
-                    obj[final_key] = [entry for entry in obj[final_key] if entry['name'] != parsed_value['name']]
+
+            # Check if the object is a list or dict before accessing
+            if final_key in obj:
+                if isinstance(obj[final_key], list):
+                    # Handle list case here
+                    if change_request == 'add':
+                        obj[final_key].append(parsed_value)
+                        print(f"Added to '{final_key}' in '{service_name}': {parsed_value}")
+                    elif change_request == 'modify':
+                        for entry in obj[final_key]:
+                            if entry['name'] == parsed_value['name']:
+                                entry['value'] = parsed_value['value']
+                                print(f"Modified '{final_key}' entry in '{service_name}': {parsed_value}")
+                                break
+                    elif change_request == 'delete':
+                        obj[final_key] = [entry for entry in obj[final_key] if entry['name'] != parsed_value['name']]
+                        print(f"Deleted entry from '{final_key}' in '{service_name}'.")
+
+                elif isinstance(obj[final_key], dict):
+                    # Handle dict case here
+                    if change_request == 'modify':
+                        obj[final_key] = parsed_value
+                        print(f"Modified '{final_key}' in '{service_name}': {parsed_value}")
+                    elif change_request == 'add':
+                        obj[final_key] = parsed_value
+                        print(f"Added '{final_key}' in '{service_name}': {parsed_value}")
+                    elif change_request == 'delete':
+                        del obj[final_key]
+                        print(f"Deleted '{final_key}' from '{service_name}'.")
             else:
-                if change_request == 'add' or change_request == 'modify':
-                    obj[final_key] = parsed_value
-                elif change_request == 'delete':
-                    obj.pop(final_key, None)
+                print(f"Warning: Attempted to modify non-existent key '{final_key}' in '{service_name}'.")
 
     return json_data
 
+
+
 def save_json_to_file(json_data, output_file):
+    if os.path.exists(output_file):
+        pass
+    else:
+    # Create the directory if it does not exist
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+    # Write the JSON data to the file
     with open(output_file, 'w') as f:
         json.dump(json_data, f, indent=4)
 
+
+# Function to create YAML files with proper formatting
+def create_yaml_files_from_json(updated_output_file, output_folder):
+    # Load the updated JSON file
+    with open(updated_output_file, 'r') as json_file:
+        json_data = json.load(json_file)
+
+    # Check if the output folder exists, if not, create it
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    # Iterate through each root object in the JSON data
+    for root_object, data in json_data.items():
+        yaml_file_path = os.path.join(output_folder, f"{root_object}.yaml")
+
+        # Process each key-value pair to handle lists of dictionaries and dictionaries
+        processed_data = process_json_data(data)
+
+        # Save the processed data to a YAML file
+        with open(yaml_file_path, 'w') as yaml_file:
+            yaml.dump(processed_data, yaml_file, default_flow_style=False, sort_keys=False)
+
+# Function to process JSON data
+def process_json_data(data):
+    if isinstance(data, list):
+        # Process lists of dictionaries
+        return [process_json_data(item) for item in data]
+    elif isinstance(data, dict):
+        # For dictionaries, format them as JSON strings
+        return {key: process_json_data(value) for key, value in data.items()}
+    elif isinstance(data, str):
+        # Enclose string values in double quotes
+        return str(data)
+    elif isinstance(data, (int, float, bool)):
+        # Return non-string types as is
+        return data
+    elif data is None:
+        # Return empty string for NoneType values
+        return '""'
+    else:
+        # If data is something else, return it as a string
+        return f'"{data}"'
+
+
 def main():
     # Specify the folder path, excel file, and output file
-    folder_path = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x-1\helm-charts\json-comparison\sit-values'
-    excel_file_path = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x\release-note.xlsx'
-    initial_output_file = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x-1\helm-charts\json-comparison\sit-values\config-sit.json'
-    updated_output_file = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x\helm-charts\json-comparison\sit-values\config-sit.json'
-
+    folder_path = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x-1\cicd-poc\helm-charts\json-comparison\sit-values'
+    excel_file_path = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x\cicd-poc\release-note.xlsx'
+    initial_output_file = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x-1\cicd-poc\helm-charts\json-comparison\sit-values\config-sit.json'
+    updated_output_file = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x\cicd-poc\helm-charts\json-comparison\sit-values\config-sit.json'
+    # Output folder path to store YAML files
+    output_folder = r'C:\Users\Surabhi\Desktop\Automation\Test\promote-x\cicd-poc\helm-charts\json-comparison\sit-values'
     # Ask the user for the sheet name
     sheet_name = input("Please enter the sheet name from which the values should be read: ")
 
@@ -107,8 +183,14 @@ def main():
     # Apply changes based on the Excel file and the selected sheet
     updated_json = apply_changes_to_json(json_data, excel_file_path, sheet_name)
 
+
     # Save the updated JSON to a file
     save_json_to_file(updated_json, updated_output_file)
+
+
+    # Create YAML files from the JSON file
+    create_yaml_files_from_json(updated_output_file, output_folder)
+
 
 if __name__ == "__main__":
     main()
