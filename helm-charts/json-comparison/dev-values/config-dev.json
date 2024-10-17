@@ -21,9 +21,11 @@
       "pullPolicy":"Always",
       "tag":"0.0.4"
     },
+    "my_deleted_list":["1","2"],
     "imagePullSecrets":[
       {
-        "name":"regvostro"
+        "name":"regvostro",
+        "id": 1001
       }
     ],
     "nameOverride":"nostro-vostro-new",
