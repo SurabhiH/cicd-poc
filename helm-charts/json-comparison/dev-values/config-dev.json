@@ -21,7 +21,6 @@
       "pullPolicy":"Always",
       "tag":"0.0.4"
     },
-    "my_deleted_list":["1","2"],
     "imagePullSecrets":[
       {
         "name":"regvostro",
