@@ -24,7 +24,6 @@
     "imagePullSecrets":[
       {
         "name":"regvostro",
-        "id": 1001
       }
     ],
     "nameOverride":"nostro-vostro-new",
