@@ -23,7 +23,7 @@
     },
     "imagePullSecrets":[
       {
-        "name":"regvostro",
+        "name":"regvostro"
       }
     ],
     "nameOverride":"nostro-vostro-new",
