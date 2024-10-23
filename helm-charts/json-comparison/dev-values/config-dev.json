@@ -4,13 +4,6 @@
     "app":{
       "name":"nostro-vostro-1000"
     },
-    "test1":{
-      "test2":{
-        "name":"test value",
-        "id":"1001",
-        "code":"red"
-      }
-    },
     "Release":{
       "Maintainer":"mobilecapital",
       "name":"nostro-vostro-new"
@@ -221,10 +214,10 @@
       },
       "hosts":[
         {
-          "host":"nostro-vostro-100",
+          "host":"nostro-vostro",
           "paths":[
             {
-              "path":"/healthy",
+              "path":"/failed",
               "pathType":""
             }
           ]
