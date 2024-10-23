@@ -39,7 +39,7 @@ def process_repositories():
     for repo_name, branches_file in repositories.items():
         # Clone the repository
         subprocess.run(['git', 'clone', f'https://github.com/SurabhiH/{repo_name}.git'], check=True)
-        
+
         # Read the branches from the respective file
         with open(branches_file, 'r') as file:
             branches = file.read().splitlines()
@@ -125,39 +125,79 @@ def format_excel_report():
         max_row = ws.max_row
         max_col = ws.max_column
 
-        # Collect values from the first column
-        first_col_values = {ws.cell(row=row, column=1).value for row in range(2, max_row + 1)}
+        # Collect the root objects and their "name" keys from the first column
+        first_col_data = {}
+        for row in range(2, max_row + 1):
+            cell_value = ws.cell(row=row, column=1).value
+            if cell_value:
+                try:
+                    root_object, json_data = cell_value.split(": ", 1)
+                    json_dict = json.loads(json_data)
+                    # Collect all "name" values from all keys
+                    first_col_data[root_object] = {item['name'] for key in json_dict for item in json_dict[key] if isinstance(item, dict) and 'name' in item}
+                except Exception as e:
+                    print(f"Error parsing JSON in row {row}: {e}")
 
         # Compare each column with the first column
         for col in range(2, max_col + 1):
-            column_values = {ws.cell(row=row, column=col).value for row in range(2, max_row + 1)}
-
-            # Track the row where missing values need to be inserted for the current column
-            next_empty_row = max_row + 1
-
-            # Check for values in the first column that are not in the current column (red highlight)
-            for row in range(2, max_row + 1):
-                cell_value = ws.cell(row=row, column=1).value
-                if cell_value not in column_values and cell_value is not None:
-                    # Add the missing value in the next available row in the current column
-                    ws.cell(row=next_empty_row, column=col).value = cell_value
-                    ws.cell(row=next_empty_row, column=col).fill = red_fill
-                    next_empty_row += 1  # Move to the next row for the next missing value
-
-            # Check for values in the current column that are not in the first column (yellow highlight)
+            column_data = {}
             for row in range(2, max_row + 1):
                 cell_value = ws.cell(row=row, column=col).value
-                if cell_value not in first_col_values and cell_value is not None:
-                    ws.cell(row=row, column=col).fill = yellow_fill
+                if cell_value:
+                    try:
+                        root_object, json_data = cell_value.split(": ", 1)
+                        json_dict = json.loads(json_data)
+                        # Collect all "name" values from all keys
+                        column_data[root_object] = {item['name'] for key in json_dict for item in json_dict[key] if isinstance(item, dict) and 'name' in item}
+                    except Exception as e:
+                        print(f"Error parsing JSON in column {col}, row {row}: {e}")
+
+            next_empty_row = max_row + 1
+
+            # Check for mismatches and missing "name" values
+            for root_object, first_names in first_col_data.items():
+                if root_object in column_data:
+                    column_names = column_data[root_object]
+                    # Check for names that are in the first column but not in the current column
+                    for name in first_names:
+                        if name not in column_names:
+                            # Append the missing name in the next available row in the current column
+                            ws.cell(row=next_empty_row, column=col).value = f"{root_object}: {{'name': '{name}'}}"
+                            ws.cell(row=next_empty_row, column=col).fill = red_fill
+                            next_empty_row += 1  # Move to the next row for the next missing value
+                else:
+                    # If the root object does not exist in the column, append all names
+                    for name in first_names:
+                        ws.cell(row=next_empty_row, column=col).value = f"{root_object}: {{'name': '{name}'}}"
+                        ws.cell(row=next_empty_row, column=col).fill = red_fill
+                        next_empty_row += 1
+
+            # Check for values in the current column that are not in the first column (yellow highlight)
+            for col in range(2, max_col + 1):
+                for row in range(2, max_row + 1):
+                    cell_value = ws.cell(row=row, column=col).value
+                    if cell_value:
+                        try:
+                            root_object, json_data = cell_value.split(": ", 1)
+                            json_dict = json.loads(json_data)
+                            column_names = {item['name'] for key in json_dict for item in json_dict[key] if isinstance(item, dict) and 'name' in item}
+                            
+                            # Check if this name is in the first column's names
+                            if root_object in first_col_data:
+                                first_names = first_col_data[root_object]
+                                for name in column_names:
+                                    if name not in first_names:
+                                        ws.cell(row=row, column=col).fill = yellow_fill
+                                        break  # Highlight only once for each cell
+                        except Exception as e:
+                            print(f"Error parsing JSON in column {col}, row {row}: {e}")
+
 
     # Save the modified Excel file
     workbook.save(excel_path)
     print(f"Excel report formatted: {excel_path}")
 
-
 if __name__ == '__main__':
     process_repositories()
     create_excel_report()
-    format_excel_report()   
-
-
+    format_excel_report()
