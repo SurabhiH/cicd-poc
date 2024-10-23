@@ -2,7 +2,7 @@
   "account":{
     "replicaCount":10,
     "app":{
-      "name":"nostro-vostro-1000",
+      "name":"nostro-vostro-100",
       "id": 1000
     },
     "Release":{
