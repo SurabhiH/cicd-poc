@@ -54,10 +54,6 @@ def apply_changes_to_json(json_data, excel_file_path, sheet_name):
 
         key_path = key.split('//')
 
-        if change_request == 'delete' and (pd.isna(value) or value == ""):
-            print(f"Value is empty for delete operation in row {index + 1} for key '{key}'. Skipping...")
-            continue  # Skip processing for deletes with empty value
-
         if pd.isna(value) or value == "":
             print(f"Error: Value for key '{key}' in row {index + 1} is empty.")
             raise ValueError(f"Empty value encountered in row {index + 1} for key '{key}'.")
@@ -73,36 +69,41 @@ def apply_changes_to_json(json_data, excel_file_path, sheet_name):
 
             final_key = key_path[-1]
 
-            # Check if the object is a list or dict before accessing
-            if final_key in obj:
-                if isinstance(obj[final_key], list):
-                    # Handle list case here
-                    if change_request == 'add':
-                        obj[final_key].append(parsed_value)
-                        print(f"Added to '{final_key}' in '{service_name}': {parsed_value}")
-                    elif change_request == 'modify':
-                        for entry in obj[final_key]:
-                            if entry['name'] == parsed_value['name']:
-                                entry['value'] = parsed_value['value']
-                                print(f"Modified '{final_key}' entry in '{service_name}': {parsed_value}")
-                                break
-                    elif change_request == 'delete':
+            # Check for special handling of 'env' keys
+            if key_path[0] == "env":
+                if change_request == 'add':
+                    if final_key not in obj:
+                        obj[final_key] = []
+                    obj[final_key].append(parsed_value)
+                    print(f"Added to '{final_key}' in '{service_name}': {parsed_value}")
+                elif change_request == 'modify':
+                    for entry in obj[final_key]:
+                        if entry['name'] == parsed_value['name']:
+                            entry['value'] = parsed_value['value']
+                            print(f"Modified '{final_key}' entry in '{service_name}': {parsed_value}")
+                            break
+                elif change_request == 'delete':
+                    if final_key in obj:
                         obj[final_key] = [entry for entry in obj[final_key] if entry['name'] != parsed_value['name']]
                         print(f"Deleted entry from '{final_key}' in '{service_name}'.")
 
-                elif isinstance(obj[final_key], dict):
-                    # Handle dict case here
-                    if change_request == 'modify':
+            else:
+                # General handling for other keys
+                if change_request == 'modify':
+                    if final_key in obj:
                         obj[final_key] = parsed_value
                         print(f"Modified '{final_key}' in '{service_name}': {parsed_value}")
-                    elif change_request == 'add':
-                        obj[final_key] = parsed_value
-                        print(f"Added '{final_key}' in '{service_name}': {parsed_value}")
-                    elif change_request == 'delete':
+                    else:
+                        print(f"Warning: Attempted to modify non-existent key '{final_key}' in '{service_name}'.")
+
+                if change_request == 'add':
+                    obj[final_key] = parsed_value
+                    print(f"Added '{final_key}' in '{service_name}': {parsed_value}")
+
+                elif change_request == 'delete':
+                    if final_key in obj:
                         del obj[final_key]
                         print(f"Deleted '{final_key}' from '{service_name}'.")
-            else:
-                print(f"Warning: Attempted to modify non-existent key '{final_key}' in '{service_name}'.")
 
     return json_data
 
