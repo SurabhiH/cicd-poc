@@ -66,7 +66,7 @@ def compare_json_files(old_data, new_data):
  
     for root in old_data.keys():
         if root not in new_data:
-            changes.append((root, 'delete', root, json.dumps(old_data[root], indent=4), 'root object deleted'))
+            changes.append((root, 'delete', '', json.dumps(old_data[root], indent=4), 'root object deleted'))
  
     return changes
  
@@ -95,7 +95,7 @@ def compare(old, new, root, changes, path='', key='name'):
             if old_key in new_dict:
                 new_item = new_dict[old_key]
                 if old_item != new_item:
-                    changes.append((root, 'modify', f"{path}//{old_key}", json.dumps(new_item, indent=4), 'Modified'))
+                    changes.append((root, 'modify', f"{path}", json.dumps(new_item, indent=4), 'Modified'))
             else:
                 changes.append((root, 'delete', path, json.dumps(old_item, indent=4), 'Deleted'))
 
