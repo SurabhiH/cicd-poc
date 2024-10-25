@@ -1,7 +1,6 @@
 import os
 import subprocess
 import json
-import csv
 import yaml
 from openpyxl import Workbook
  
@@ -70,13 +69,13 @@ def compare_json_files(old_data, new_data):
  
     return changes
  
-
-def compare(old, new, root, changes, path='', key='name'):
-    if isinstance(old, dict):
+def compare(old, new, root, changes, path=''):
+    # Handle dictionary structures
+    if isinstance(old, dict) and isinstance(new, dict):
         for k in old.keys():
             new_key_path = f"{path}//{k}" if path else k
             if k in new:
-                compare(old[k], new[k], root, changes, new_key_path, key)
+                compare(old[k], new[k], root, changes, new_key_path)
             else:
                 changes.append((root, 'delete', new_key_path, json.dumps(old[k], indent=4), 'Deleted'))
 
@@ -85,40 +84,49 @@ def compare(old, new, root, changes, path='', key='name'):
             if k not in old:
                 changes.append((root, 'add', new_key_path, json.dumps(new[k], indent=4), 'Added'))
 
-    elif isinstance(old, list) and all(isinstance(i, dict) for i in old):
-        # Handle lists of dictionaries
-        old_dict = {item.get(key): item for item in old if key in item}
-        new_dict = {item.get(key): item for item in new if key in item}
-
-        # Check for modifications, deletions, and additions
-        for old_key, old_item in old_dict.items():
-            if old_key in new_dict:
-                new_item = new_dict[old_key]
-                if old_item != new_item:
-                    changes.append((root, 'modify', f"{path}", json.dumps(new_item, indent=4), 'Modified'))
+    # Handle lists
+    elif isinstance(old, list) and isinstance(new, list):
+        if all(isinstance(i, dict) for i in old) and all(isinstance(i, dict) for i in new):
+            # Check if both lists are not empty
+            if old and new and "name" in old[0] and "name" in new[0]:
+                compare_list_of_dicts(old, new, root, changes, path)
             else:
-                changes.append((root, 'delete', path, json.dumps(old_item, indent=4), 'Deleted'))
+                # Handle lists without "name" key or if lists are empty
+                for i, old_item in enumerate(old):
+                    if i < len(new):
+                        if old_item != new[i]:
+                            changes.append((root, 'modify', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Modified'))
+                    else:
+                        changes.append((root, 'delete', f"{path}[{i}]", json.dumps(old_item, indent=4), 'Deleted'))
 
-        for new_key, new_item in new_dict.items():
-            if new_key not in old_dict:
-                changes.append((root, 'add', path, json.dumps(new_item, indent=4), 'Added'))
+                # Add any new elements from the new list
+                for i in range(len(old), len(new)):
+                    changes.append((root, 'add', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Added'))
 
-    elif isinstance(old, list):
-        # Handle non-dictionary lists
-        for i, old_item in enumerate(old):
-            if i < len(new):
-                if old_item != new[i]:
-                    changes.append((root, 'modify', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Modified'))
-            else:
-                changes.append((root, 'delete', f"{path}[{i}]", json.dumps(old_item, indent=4), 'Deleted'))
-
-        for i in range(len(old), len(new)):
-            changes.append((root, 'add', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Added'))
-
+    # Compare scalar values
     else:
-        # Compare scalar values
         if old != new:
             changes.append((root, 'modify', path, json.dumps(new, indent=4), 'Modified'))
+
+def compare_list_of_dicts(old_list, new_list, root, changes, path=''):
+    # Compare lists of dictionaries based on the "name" key
+    old_dict = {item["name"]: item for item in old_list if "name" in item}
+    new_dict = {item["name"]: item for item in new_list if "name" in item}
+
+    # Compare old dictionaries with new
+    for key, old_item in old_dict.items():
+        if key in new_dict:
+            new_item = new_dict[key]
+            # If there are changes in the item
+            if old_item != new_item:
+                changes.append((root, 'modify', path, json.dumps(new_item, indent=4), 'Modified'))
+        else:
+            changes.append((root, 'delete', path, json.dumps(old_item, indent=4), 'Deleted'))
+
+    # Check for additions
+    for key, new_item in new_dict.items():
+        if key not in old_dict:
+            changes.append((root, 'add', path, json.dumps(new_item, indent=4), 'Added'))
 
 
 def find_excel_file(folder_path):
