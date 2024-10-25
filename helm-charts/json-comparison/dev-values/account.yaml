@@ -46,6 +46,8 @@ env:
     value: "http://env1.random.org/path/ENV1"
   - name: HOST_1
     value: "1.1.1.1"
+  - name: HOST_2
+    value: "2.2.2.2"
   - name: PORT_1
     value: "3000"
   - name: HOST_2
