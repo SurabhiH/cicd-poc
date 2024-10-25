@@ -224,7 +224,7 @@
             {
               "path":"/passed",
               "pathType":"HTTP"
-            },
+            }
           ]
         },
         {
