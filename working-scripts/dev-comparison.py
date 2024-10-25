@@ -95,13 +95,13 @@ def compare(old, new, root, changes, path=''):
                 for i, old_item in enumerate(old):
                     if i < len(new):
                         if old_item != new[i]:
-                            changes.append((root, 'modify', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Modified'))
+                            changes.append((root, 'modify', f"{path}", "["+json.dumps(new[i], indent=4)+"]", 'Modified'))
                     else:
-                        changes.append((root, 'delete', f"{path}[{i}]", json.dumps(old_item, indent=4), 'Deleted'))
+                        changes.append((root, 'delete', f"{path}", json.dumps(old_item, indent=4), 'Deleted'))
 
                 # Add any new elements from the new list
                 for i in range(len(old), len(new)):
-                    changes.append((root, 'add', f"{path}[{i}]", json.dumps(new[i], indent=4), 'Added'))
+                    changes.append((root, 'add', f"{path}", json.dumps(new[i], indent=4), 'Added'))
 
     # Compare scalar values
     else:
