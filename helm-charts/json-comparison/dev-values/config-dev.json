@@ -11,7 +11,7 @@
     },
     "image":{
       "image_name":"my_image",
-      "repository":"myrepo.yourrepo.com/mobilecapital/nostro-vostro-new",
+      "repository":"myrepo.yourrepo.com/mobilecapital/nostro-vostro-latest",
       "pullPolicy":"Always",
       "tag":"0.0.4"
     },
@@ -24,6 +24,10 @@
     "fullnameOverride":"nostro-vostro-new",
     "env":{
       "account_statement":[
+        { 
+          "name": "MY_DEL_KEY",
+          "value": "MY_DEL_VALUE"
+        }, 
         {
           "name":"MY_ID",
           "value":1000
@@ -102,7 +106,7 @@
         },
         {
           "name":"TLS_HOSTS",
-          "value":"1.1.1.1:4333,2.2.2.2:4333,3.3.3.3:4333,4.4.4.4:4333,5.5.5.5:4333,6.6.6.6:4333,7.7.7.7:4333"
+          "value":"1.1.1.1:4333,2.2.2.2:4333,3.3.3.3:4333,4.4.4.4:4333,5.5.5.5:4333,6.6.6.6:4333,7.7.7.7,8.8.8.8:4333"
         },
         {
           "name":"SERVER_CA",
@@ -218,9 +222,9 @@
           "host":"nostro-vostro",
           "paths":[
             {
-              "path":"/failed",
-              "pathType":""
-            }
+              "path":"/passed",
+              "pathType":"HTTP"
+            },
           ]
         },
         {
