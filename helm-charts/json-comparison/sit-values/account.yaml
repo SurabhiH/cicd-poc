@@ -146,6 +146,7 @@ ingress:
     paths:
     - path: ""
       pathType: ""
+    - id:10
   tls: []
 
 resources:
