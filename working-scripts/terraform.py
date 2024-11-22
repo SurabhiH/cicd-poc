@@ -34,33 +34,51 @@ def generate_tfvars(data, templates_folder, global_file, output_file):
     with open(global_file, 'r') as file:
         global_content = file.read()
     
-    # Initialize auto.tfvars content
-    tfvars_content = global_content + "\n"
-
+    # Initialize the content as a dictionary
+    tfvars_dict = {}
+    
     # Loop through each resource (excluding 'ID' column)
     for column, values in data.items():
         if column.lower() == "id":  # Skip the 'ID' column
             continue
         
-        # Section header for the resource column
-        section_begins = f"###################################### {column.upper()} ###########################################\n"
-        tfvars_content += section_begins
+        # Create a dictionary for each column
+        column_dict = {}
+        
         # Process each value for the column
-        for value in values:
+        for idx, value in enumerate(values):
             template_file = os.path.join(templates_folder, f"{column.lower()}.txt")
             if os.path.exists(template_file):
                 replacements = {
-                    "<<id>>": str(values.index(value) + 1),  # Index + 1 for ID
+                    "<<id>>": str(idx + 1),  # Index + 1 for ID
                     "<<name>>": value,
                     "<<current_date>>": current_date
                 }
                 section_content = process_template(template_file, replacements)
-                tfvars_content += section_content + "\n"
+                column_dict[f"{column.lower()}_{idx + 1}"] = section_content
             else:
                 print(f"Warning: Template for '{column}' not found.")
+        
+        # Store the column dictionary in the main tfvars dictionary
+        tfvars_dict[column] = column_dict
+
+    # Initialize the tfvars content with the global settings
+    tfvars_content = global_content + "\n"
     
-        section_ends = f"################################################################################\n\n\n"
+    # Write the data from the tfvars dictionary to the auto.tfvars content
+    for column, column_dict in tfvars_dict.items():
+        # Section header for the resource column
+        section_begins = f"###################################### {column.upper()} ###########################################\n"
+        section_begins += f"{column.lower()} = {{\n\n"  # Open the dictionary block for each section
+        tfvars_content += section_begins
+        
+        # Add each value and its content to the tfvars_content
+        for key, content in column_dict.items():
+            tfvars_content += f"    {key} = {{\n{content}\n    }},\n\n"
+        
+        section_ends = "}\n\n"  # Close the dictionary block
         tfvars_content += section_ends
+        tfvars_content+= f"###################################### {column.upper()} ENDS ###########################################\n"
 
     # Write the generated content to auto.tfvars
     with open(output_file, 'w') as file:
