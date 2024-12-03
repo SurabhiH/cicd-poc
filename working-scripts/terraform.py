@@ -5,7 +5,7 @@ import pandas as pd
 # Constants
 TEMPLATE_FOLDER = "templates"  # Folder containing all template files
 INPUT_EXCEL = "data.xlsx"  # The input Excel file
-OUTPUT_FILE = "auto.tfvars"      # Output file
+OUTPUT_FILE = "auto.tfvars"  # Output file
 
 # Function to load templates dynamically
 def load_templates(template_folder):
@@ -47,6 +47,54 @@ def parse_excel(file_path):
         data[sheet_name] = excel_data.parse(sheet_name).fillna("").to_dict(orient="records")
     return data
 
+# Function to handle pull_subscription template
+def handle_pull_subscription_template(template, records):
+    """
+    Handles the pull_subscription template and adds the subs_topic right after create_schema if create_schema is true.
+    """
+    tfvars_content = ""
+    template_lines = template.splitlines()
+    
+    for record in records:
+        # Check if create_schema is true (no need to check for string case)
+        create_schema = record.get("create_schema", False)  # Default to False if not found
+        
+        resource_content = ""
+        subs_topic_inserted = False  # Flag to track if subs_topic has been added
+        
+        for line in template_lines:
+            resource_content += line + "\n"
+            
+            # If create_schema is true and we haven't inserted subs_topic yet, do it now
+            if create_schema and "create_schema" in line and not subs_topic_inserted:
+                # Define the subs_topic template
+                subs_topic_template = """
+                subs_topic = {
+                    topic = <<topic>>
+                    topic_labels = {
+                        provisioningdate = <<provisioningdate>>
+                    }
+                    schema = <<schema>>
+                    message_storage_policy = <<message_storage_policy>>
+                }
+                """
+                
+                # Replace placeholders in the subs_topic template
+                subs_topic_content = replace_placeholders(subs_topic_template, record)
+                
+                # Add the subs_topic content after create_schema
+                resource_content += subs_topic_content.strip() + "\n"
+                
+                # Mark that subs_topic has been inserted
+                subs_topic_inserted = True
+        
+        # After processing all lines, replace placeholders for the whole resource
+        resource_content = replace_placeholders(resource_content, record)
+        
+        tfvars_content += resource_content + "\n"
+    
+    return tfvars_content
+
 # Function to generate the auto.tfvars content
 def generate_tfvars(data, templates):
     """
@@ -62,31 +110,29 @@ def generate_tfvars(data, templates):
     for resource_type, records in data.items():
         if resource_type in templates:
             template = templates[resource_type]
-            
-            # Extract the first and last lines of the template
-            template_lines = template.splitlines()
-            first_line = template_lines[0] + "\n"
-            last_line = template_lines[-1]
-            
-            # Add first line to the tfvars_content
-            tfvars_content += first_line
-            
-            # Iterate over the records for this resource type
-            for idx, record in enumerate(records):
-                # Replace placeholders and generate content for the current record
-                resource_content = replace_placeholders(template, record)
-                
-                # Remove the first and last line content to avoid duplication
-                resource_content = "\n".join(resource_content.splitlines()[1:-1])  # Removing first and last lines
-                
-                # Append the resource content
-                tfvars_content += resource_content + "\n"
-            
-            # Add last line to the tfvars_content
-            tfvars_content += last_line + "\n\n"
+            if resource_type == "pull_subscription":
+                # Special handling for pull_subscription
+                tfvars_content += handle_pull_subscription_template(template, records)
+            else:
+                # Generic handling for other templates
+                template_lines = template.splitlines()
+                first_line = template_lines[0] + "\n"
+                last_line = template_lines[-1]
+
+                # Add first line
+                tfvars_content += first_line
+
+                for record in records:
+                    resource_content = replace_placeholders(template, record)
+                    resource_lines = resource_content.splitlines()
+                    resource_body = "\n".join(resource_lines[1:-1])  # Exclude first and last lines
+                    tfvars_content += resource_body + "\n"
+
+                # Add last line
+                tfvars_content += last_line + "\n\n"
         else:
             print(f"Warning: No template found for resource type '{resource_type}'")
-    
+
     return tfvars_content
 
 # Main function
