@@ -1,104 +1,118 @@
-import openpyxl
 import os
-import datetime
+import json
+import pandas as pd
 
-# Helper function to read Excel sheet
-def read_excel(file_path):
-    wb = openpyxl.load_workbook(file_path)
-    sheet = wb.active
+# Constants
+TEMPLATE_FOLDER = "templates"  # Folder containing all template files
+INPUT_EXCEL = "data.xlsx"  # The input Excel file
+OUTPUT_FILE = "auto.tfvars"      # Output file
+
+# Function to load templates dynamically
+def load_templates(template_folder):
+    """
+    Load all template files from the specified folder.
+    Returns a dictionary with filenames as keys and file content as values.
+    """
+    templates = {}
+    for file_name in os.listdir(template_folder):
+        if file_name.endswith(".txt"):
+            with open(os.path.join(template_folder, file_name), "r") as file:
+                templates[file_name.replace(".txt", "")] = file.read()
+    return templates
+
+# Function to replace placeholders in a template
+def replace_placeholders(template, data):
+    """
+    Replace placeholders in the template with values from the data dictionary.
+    Handles missing data and nested structures gracefully.
+    """
+    for key, value in data.items():
+        placeholder = f"<<{key}>>"
+        if isinstance(value, (dict, list)):
+            # Convert nested structures to JSON strings (for Terraform compatibility)
+            value = json.dumps(value, indent=2).replace('"', '')  # Terraform-friendly syntax
+        elif value is None:
+            value = ""  # Replace None with empty string
+        template = template.replace(placeholder, str(value))
+    return template
+
+# Function to parse Excel input file
+def parse_excel(file_path):
+    """
+    Parse the input Excel file into a dictionary where each sheet represents a resource type.
+    """
+    excel_data = pd.ExcelFile(file_path)
     data = {}
-    for col in sheet.iter_cols(min_row=1, max_row=sheet.max_row, min_col=1, max_col=sheet.max_column):
-        column_name = col[0].value
-        data[column_name] = [cell.value for cell in col[1:] if cell.value is not None]
+    for sheet_name in excel_data.sheet_names:
+        data[sheet_name] = excel_data.parse(sheet_name).fillna("").to_dict(orient="records")
     return data
 
-# Helper function to load and replace placeholders in template files
-def process_template(template_path, replacements):
-    if not os.path.exists(template_path):
-        return ""
-    
-    with open(template_path, 'r') as file:
-        content = file.read()
-    
-    # Replace placeholders
-    for placeholder, value in replacements.items():
-        content = content.replace(placeholder, value)
-    
-    return content
+# Function to generate the auto.tfvars content
+def generate_tfvars(data, templates):
+    """
+    Generate the auto.tfvars content by applying data to templates.
+    """
+    tfvars_content = ""
 
-# Function to generate the auto.tfvars file content
-def generate_tfvars(data, templates_folder, global_file, output_file):
-    current_date = datetime.datetime.now().strftime("%d-%b-%Y")
-    
-    # Read the global configurations first
-    with open(global_file, 'r') as file:
-        global_content = file.read()
-    
-    # Initialize the content as a dictionary
-    tfvars_dict = {}
-    
-    # Loop through each resource (excluding 'ID' column)
-    for column, values in data.items():
-        if column.lower() == "id":  # Skip the 'ID' column
-            continue
-        
-        # Create a dictionary for each column
-        column_dict = {}
-        
-        # Process each value for the column
-        for idx, value in enumerate(values):
-            template_file = os.path.join(templates_folder, f"{column.lower()}.txt")
-            if os.path.exists(template_file):
-                replacements = {
-                    "<<id>>": str(idx + 1),  # Index + 1 for ID
-                    "<<name>>": value,
-                    "<<current_date>>": current_date
-                }
-                section_content = process_template(template_file, replacements)
-                column_dict[f"{column.lower()}_{idx + 1}"] = section_content
-            else:
-                print(f"Warning: Template for '{column}' not found.")
-        
-        # Store the column dictionary in the main tfvars dictionary
-        tfvars_dict[column] = column_dict
+    # Add the global section first (if it exists)
+    if "global" in templates:
+        tfvars_content += templates["global"] + "\n"
 
-    # Initialize the tfvars content with the global settings
-    tfvars_content = global_content + "\n"
+    # Iterate through each resource type (e.g., topics, buckets)
+    for resource_type, records in data.items():
+        if resource_type in templates:
+            template = templates[resource_type]
+            
+            # Extract the first and last lines of the template
+            template_lines = template.splitlines()
+            first_line = template_lines[0] + "\n"
+            last_line = template_lines[-1]
+            
+            # Add first line to the tfvars_content
+            tfvars_content += first_line
+            
+            # Iterate over the records for this resource type
+            for idx, record in enumerate(records):
+                # Replace placeholders and generate content for the current record
+                resource_content = replace_placeholders(template, record)
+                
+                # Remove the first and last line content to avoid duplication
+                resource_content = "\n".join(resource_content.splitlines()[1:-1])  # Removing first and last lines
+                
+                # Append the resource content
+                tfvars_content += resource_content + "\n"
+            
+            # Add last line to the tfvars_content
+            tfvars_content += last_line + "\n\n"
+        else:
+            print(f"Warning: No template found for resource type '{resource_type}'")
     
-    # Write the data from the tfvars dictionary to the auto.tfvars content
-    for column, column_dict in tfvars_dict.items():
-        # Section header for the resource column
-        section_begins = f"###################################### {column.upper()} ###########################################\n"
-        section_begins += f"{column.lower()} = {{\n\n"  # Open the dictionary block for each section
-        tfvars_content += section_begins
-        
-        # Add each value and its content to the tfvars_content
-        for key, content in column_dict.items():
-            tfvars_content += f"    {key} = {{\n{content}\n    }},\n\n"
-        
-        section_ends = "}\n\n"  # Close the dictionary block
-        tfvars_content += section_ends
-        tfvars_content+= f"###################################### {column.upper()} ENDS ###########################################\n"
+    return tfvars_content
 
-    # Write the generated content to auto.tfvars
-    with open(output_file, 'w') as file:
-        file.write(tfvars_content)
-    print(f"auto.tfvars file generated: {output_file}")
-
-# Main function to run the script
+# Main function
 def main():
-    # Paths to the required files
-    excel_file = "data.xlsx"  # Excel file with resource data
-    templates_folder = "templates"  # Folder where template files are stored
-    global_file = "templates/global.txt"  # File with global settings
-    output_file = "auto.tfvars"  # Output auto.tfvars file
+    # Ensure the template folder exists
+    if not os.path.exists(TEMPLATE_FOLDER):
+        raise FileNotFoundError(f"The template folder '{TEMPLATE_FOLDER}' does not exist.")
+    
+    # Load templates
+    templates = load_templates(TEMPLATE_FOLDER)
+    print(f"Loaded templates: {list(templates.keys())}")
 
-    # Step 1: Read data from the Excel sheet
-    data = read_excel(excel_file)
+    # Parse input Excel file
+    if not os.path.exists(INPUT_EXCEL):
+        raise FileNotFoundError(f"The input Excel file '{INPUT_EXCEL}' does not exist.")
+    data = parse_excel(INPUT_EXCEL)
 
-    # Step 2: Generate the auto.tfvars file
-    generate_tfvars(data, templates_folder, global_file, output_file)
+    # Generate auto.tfvars content
+    tfvars_content = generate_tfvars(data, templates)
 
-# Run the script
+    # Write to output file
+    with open(OUTPUT_FILE, "w") as file:
+        file.write(tfvars_content)
+
+    print(f"Successfully generated '{OUTPUT_FILE}'.")
+
+# Entry point
 if __name__ == "__main__":
     main()
