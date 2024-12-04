@@ -50,11 +50,22 @@ def parse_excel(file_path):
 # Function to handle pull_subscription template
 def handle_pull_subscription_template(template, records):
     """
-    Handles the pull_subscription template and adds the subs_topic right after create_schema if create_schema is true.
+    Handles the pull_subscription template:
+    - Adds the first line of the template only once at the start of the tfvars_content.
+    - Adds the last line of the template only once at the end of the tfvars_content.
+    - Adds the subs_topic section after create_schema if create_schema is true.
     """
     tfvars_content = ""
     template_lines = template.splitlines()
     
+    # Extract the first and last lines of the template
+    first_line = template_lines[0]
+    last_line = template_lines[-1]
+    
+    # Start the content with the first line of the template
+    tfvars_content += first_line + "\n"
+    
+    # Process each record
     for record in records:
         # Check if create_schema is true (no need to check for string case)
         create_schema = record.get("create_schema", False)  # Default to False if not found
@@ -62,7 +73,8 @@ def handle_pull_subscription_template(template, records):
         resource_content = ""
         subs_topic_inserted = False  # Flag to track if subs_topic has been added
         
-        for line in template_lines:
+        # Process each line of the template (excluding the first and last lines)
+        for line in template_lines[1:-1]:
             resource_content += line + "\n"
             
             # If create_schema is true and we haven't inserted subs_topic yet, do it now
@@ -93,7 +105,11 @@ def handle_pull_subscription_template(template, records):
         
         tfvars_content += resource_content + "\n"
     
+    # End the content with the last line of the template
+    tfvars_content += last_line + "\n"
+    
     return tfvars_content
+
 
 # Function to generate the auto.tfvars content
 def generate_tfvars(data, templates):
@@ -110,6 +126,7 @@ def generate_tfvars(data, templates):
     for resource_type, records in data.items():
         if resource_type in templates:
             template = templates[resource_type]
+
             if resource_type == "pull_subscription":
                 # Special handling for pull_subscription
                 tfvars_content += handle_pull_subscription_template(template, records)
@@ -117,9 +134,9 @@ def generate_tfvars(data, templates):
                 # Generic handling for other templates
                 template_lines = template.splitlines()
                 first_line = template_lines[0] + "\n"
-                last_line = template_lines[-1]
+                last_line = template_lines[-1] + "\n\n"
 
-                # Add first line
+                # Add the first line only once at the start of the section
                 tfvars_content += first_line
 
                 for record in records:
@@ -128,8 +145,8 @@ def generate_tfvars(data, templates):
                     resource_body = "\n".join(resource_lines[1:-1])  # Exclude first and last lines
                     tfvars_content += resource_body + "\n"
 
-                # Add last line
-                tfvars_content += last_line + "\n\n"
+                # Add the last line only once at the end of the section
+                tfvars_content += last_line
         else:
             print(f"Warning: No template found for resource type '{resource_type}'")
 
