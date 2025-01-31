@@ -134,37 +134,39 @@ def write_changes_to_excel(changes, release_note_path, envs):
     if not changes:
         print("No differences found, skipping the creation of release note.")
         return
-    excel_file = "release-note.xlsx"
-    excel_file_path = os.path.join(release_note_path, excel_file)
  
-    # Check if the file exists
-    if os.path.exists(excel_file_path):
-        wb = load_workbook(excel_file_path)
     else:
-        wb = Workbook()
+        excel_file = "release-note.xlsx"
+        excel_file_path = os.path.join(release_note_path, excel_file)
+    
+        # Check if the file exists
+        if os.path.exists(excel_file_path):
+            wb = load_workbook(excel_file_path)
+        else:
+            wb = Workbook()
  
-    first_sheet = wb.active
-    first_sheet.title = envs[0]  # Name the first sheet
+        first_sheet = wb.active
+        first_sheet.title = envs[0]  # Name the first sheet
+    
+        first_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Value before modification', 'Comment'])
+    
+            # Write the changes for the environment
+        for change in changes:
+            service_name, change_type, key, value, prev_value, comment = change
+            # Append new changes to the relevant sheet
+            first_sheet.append([service_name, change_type, key, value, prev_value, comment])
  
-    first_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Value before modification', 'Comment'])
+        for env in envs[1:]:
+            new_sheet = wb.create_sheet(title=env)
+            new_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Value before modification','Comment'])
  
-        # Write the changes for the environment
-    for change in changes:
-        service_name, change_type, key, value, prev_value, comment = change
-        # Append new changes to the relevant sheet
-        first_sheet.append([service_name, change_type, key, value, prev_value, comment])
+            for row in first_sheet.iter_rows(min_row=2, values_only=True):
+                # Copy all rows but clear the "Value" column (4th column)
+                new_sheet.append([row[0], row[1], row[2], '', row[4], row[5]])
  
-    for env in envs[1:]:
-        new_sheet = wb.create_sheet(title=env)
-        new_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Value before modification','Comment'])
- 
-        for row in first_sheet.iter_rows(min_row=2, values_only=True):
-            # Copy all rows but clear the "Value" column (4th column)
-            new_sheet.append([row[0], row[1], row[2], '', row[4], row[5]])
- 
-    # Save the updated workbook
-    wb.save(excel_file_path)
- 
+        # Save the updated workbook
+        wb.save(excel_file_path)
+    
 def parse_service_tags(file_path):
     """
     Parses the service tags from the 'update_image_tags.txt' file and returns a dictionary
@@ -234,14 +236,16 @@ def update_image_tags_in_release_note(service_tags, release_note_path, envs):
         wb = load_workbook(excel_file_path)
     else:
         wb = Workbook()
- 
     
     if envs[0] in wb.sheetnames:
         sheet = wb[envs[0]]
+        print(sheet)
     else:
-        ws = wb.create_sheet(title=env)
+        ws = wb.active
+        ws.title = envs[0]
         ws.append(['Service name', 'Change Request', 'Key', 'Value', 'Value before modification', 'Comment'])
         sheet = ws
+        print("sheetname: ",sheet)
  
     # Append image changes
     for change in image_changes:
@@ -253,18 +257,13 @@ def update_image_tags_in_release_note(service_tags, release_note_path, envs):
             new_sheet = wb[env]
             for change in image_changes:
                 service_name, change_type, key, value, prev_value, comment = change
-                new_sheet.append([service_name, change_type, key, value, prev_value, comment])
+                new_sheet.append([service_name, change_type, key, '', prev_value, comment])
         else:
             new_sheet = wb.create_sheet(title=env)
             new_sheet.append(['Service name', 'Change Request', 'Key', 'Value', 'Value before modification','Comment'])
             for change in image_changes:
                 service_name, change_type, key, value, prev_value, comment = change
-                new_sheet.append([service_name, change_type, key, value, prev_value, comment])
- 
- 
- 
- 
- 
+                new_sheet.append([service_name, change_type, key, '', prev_value, comment])
     # Save the updated workbook
     wb.save(excel_file_path)
  
@@ -325,7 +324,7 @@ def compare_shell_scripts(folder_x_1, folder_x, release_note_path, env):
  
 def main():
     repos_info = {
-        'cs-helm-charats': r'https://github.hdfcbank.com/HDFCBANK/cs-helm-charats.git'
+        'admin-helm-charts': r'https://github.hdfcbank.com/HDFCBANK/admin-helm-charts.git'
     }
  
     for repo_name, repo_url in repos_info.items():
@@ -383,7 +382,7 @@ def main():
         # Write changes to Excel with multiple sheets
     write_changes_to_excel(changes, release_note_path, envs)
  
-    txt_file_path = os.path.join(target_folder_x, f"helm-charts/{envs[0]}-values/upgrade-services.txt")
+    txt_file_path = os.path.join(target_folder_x, f"upgrade-services.txt")
     print(f"image-promotion.txt file path: {txt_file_path}")
     service_tags = parse_service_tags(txt_file_path)
     if not service_tags:
