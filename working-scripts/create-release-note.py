@@ -324,7 +324,7 @@ def compare_shell_scripts(folder_x_1, folder_x, release_note_path, env):
  
 def main():
     repos_info = {
-        'admin-helm-charts': r'https://github.hdfcbank.com/HDFCBANK/admin-helm-charts.git'
+        'admin-helm-charts': r'/admin-helm-charts.git'
     }
  
     for repo_name, repo_url in repos_info.items():
