@@ -4,6 +4,7 @@ import yaml
 import json
 import pandas as pd
 import openpyxl
+import subprocess
  
  
 def read_yaml_files_to_json(folder_path):
@@ -88,7 +89,7 @@ def insert_hardcoded_value(text, service_file):
     return modified_text
  
 def update_template(service_file):
-    temp_path = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x/cs-helm-charats/helm-charts/templates/deployment.yaml'
+    temp_path = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x/admin-helm-charts/helm-charts/templates/deployment.yaml'
    
     # Read the YAML file as text
     with open(temp_path, 'r') as file:
@@ -244,30 +245,76 @@ def create_txt_file(excel_path,env,txt_path):
                 pass
             else:
                 file.write(f"{name}\n")    
+ 
+def update_txt_file_with_yaml_values(txt_file_path, yaml_folder_path):
+    # Read the filenames from the .txt file
+    with open(txt_file_path, 'r') as file:
+        filenames = [line.strip() for line in file.readlines()]
+        print(filenames)
+ 
+    # For each filename in the txt file, find the corresponding YAML file
+    for filename in filenames:
+        yaml_file_path = os.path.join(yaml_folder_path, f"{filename}.yaml")
+        if os.path.exists(yaml_file_path):
+            with open(yaml_file_path, 'r') as yaml_file:
+                yaml_content = yaml.safe_load(yaml_file)
+                name_value = yaml_content.get('app', {}).get('name', None)
+                
+                if name_value:
+                    # Replace the filename in the txt file with the name value from YAML
+                    print(f"Updating {filename} in txt file with {name_value}")
+                    filenames[filenames.index(filename)] = f"{filename}:{name_value}"
+                    print(f"{filename}")
+ 
+    # Write the updated filenames back to the txt file
+    with open(txt_file_path, 'w') as file:
+        for filename in filenames:
+            file.write(f"{filename}\n")
+ 
+ 
+def apply_sed_to_yaml(folder_path):
+    if not os.path.exists(folder_path):
+        print(f"Error: Folder '{folder_path}' does not exist.")
+        return
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith(".yaml"):
+            file_path = os.path.join(folder_path, file_name)
+            sed_command = f"sed -i '' -E -e 's/([[:space:]]+value:[[:space:]]*)(0[0-9]+)([[:space:]]*$)/\\1\"\\2\"\\3/' -e 's/([[:space:]]+value:[[:space:]]*)([A-Z])([[:space:]]*$)/\\1\"\\2\"\\3/' {file_path}"
+ 
+            try:
+                subprocess.run(sed_command, shell=True, check=True)
+                print(f"Processed: {file_name}")
+            except subprocess.CalledProcessError as e:
+                print(f"Error processing {file_name}: {e}")
+ 
         
 def main():
-    release_note_path = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x/cs-helm-charats/release_note'
-    repo_x = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x/cs-helm-charats'
+    release_note_path = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x/admin-helm-charts/release_note'
+    repo_x = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x/admin-helm-charts'
     for foldername in os.listdir(repo_x):
         if foldername.endswith('helm-charts') and os.path.exists(f"{release_note_path}/release-note.xlsx"):
             excel_file_path =  os.path.join(release_note_path,f"release-note.xlsx")
             sheet_name = check_updated_env(excel_file_path)
             for sheet in sheet_name:
                 print(f"Promoting the values in env: {sheet} of {foldername}")
-                folder_path = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x-1/cs-helm-charats/helm-charts/{sheet}-values'
-                initial_output_file = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x-1/cs-helm-charats/helm-charts/{sheet}-values/config-{sheet}.json'
-                updated_output_file = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x/cs-helm-charats/helm-charts/{sheet}-values/config-{sheet}.json'
-                output_folder = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x/cs-helm-charats/helm-charts/{sheet}-values'
-                txt_file_path = rf'/Users/mgxr3734/Desktop/generate-config/promotion-x/cs-helm-charats/helm-charts/{sheet}-values/{sheet}.txt'
+                folder_path = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x-1/admin-helm-charts/helm-charts/{sheet}-values'
+                initial_output_file = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x-1/admin-helm-charts/helm-charts/{sheet}-values/config-{sheet}.json'
+                updated_output_file = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x/admin-helm-charts/helm-charts/{sheet}-values/config-{sheet}.json'
+                output_folder = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x/admin-helm-charts/helm-charts/{sheet}-values'
+                txt_file_path = rf'/Users/mgxr3734/Desktop/cs-repo/admin-repo/generate-config/promotion-x/admin-helm-charts/helm-charts/{sheet}-values/{sheet}.txt'
                 json_data = read_yaml_files_to_json(folder_path)
                 save_json_to_file(json_data, initial_output_file)
                 updated_json = apply_changes_to_json(json_data, excel_file_path, sheet)
                 save_json_to_file(updated_json, updated_output_file)
                 create_yaml_files_from_json(updated_output_file, output_folder)
+                apply_sed_to_yaml(output_folder)
                 create_txt_file(excel_file_path,sheet,txt_file_path)
+                update_txt_file_with_yaml_values(txt_file_path,output_folder)
+                
  
-        elif foldername.endswith('helm-charats') and os.path.exists(f"release-note.xlsx") == False:
+        elif foldername.endswith('helm-charts') and os.path.exists(f"release-note.xlsx") == False:
             print(f"]release-note.xlsx not present.")
             
 if __name__ == "__main__":
     main()
+ 
